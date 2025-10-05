@@ -24,6 +24,8 @@ git clone https://github.com/KRSahalie/Template.git cd template
 
 2. **Crear tu rama personal** (opcional, pero recomendado)
 
+3. Como poder utilizar o crear una rama personal.
+
 git checkout -b mi-rama
 
 3. **Agregar tus archivos y carpetas según tu proyecto**  
