@@ -2,6 +2,7 @@
 
 Este repositorio sirve como **punto de partida para proyectos universitarios**.  
 Los estudiantes pueden clonar este repo y usarlo como base para sus propios repositorios.
+proyecto2
 
 ---
 
