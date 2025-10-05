@@ -1,4 +1,4 @@
-# Template Universitario - Mi Primer Repo
+# Template Universitario - Mi Segundo Proyect Repo
 
 Este repositorio sirve como **punto de partida para proyectos universitarios**.  
 Los estudiantes pueden clonar este repo y usarlo como base para sus propios repositorios.
