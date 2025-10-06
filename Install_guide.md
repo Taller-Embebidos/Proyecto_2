@@ -1,0 +1,157 @@
+Guía de compilación Yocto para Raspberry Pi 4
+
+Entorno: RHEL 10 / Fedora 42 usando Toolbox o Podman
+1. Preparación del entorno
+
+Crear el directorio de trabajo:
+```bash
+mkdir ~/tools
+```
+Creación del contenedor
+
+Usando Toolbox (recomendado):
+```bash
+toolbox create --image registry.access.redhat.com/ubi9/ubi:9.6 yocto
+```
+
+Usando Podman:
+```bash
+podman run -it --name yocto --replace -v /home/alfaquillo/tools:/tools:z fedora:40 /bin/bash
+```
+
+Notas:
+
+    En este caso se comparte la carpeta `~/tools` del host con el contenedor
+
+    Se utiliza la imagen de RHEL 9.6 como contenedor (no es oficial para yocto pero funciona correctamente) con nombre `yocto`
+
+2. Ingreso al contenedor
+
+Usando Toolbox:
+```bash
+toolbox enter yocto
+```
+
+Usando Podman:
+```bash
+podman start -ai yocto
+```
+
+Consideraciones:
+
+    En Podman se requiere un usuario sin privilegios de root (Yocto no permite compilar como root)
+
+    En Toolbox esto no es necesario, ya que las carpetas del host están expuestas y se ejecuta con el usuario del sistema
+
+Crear usuario no root en podman:
+```bash
+useradd -m -u 1000 -s /bin/bash build
+passwd build # opcional
+```
+
+Cambiar a usuario build (solo necesario al ejecutar BitBake):
+```bash
+su - build
+```
+
+Salir y volver a root:
+```bash
+exit
+```
+3. Instalación de dependencias 
+
+Instalar los paquetes requeridos para la compilación:
+```bash
+dnf install -y @development bzip2 ccache chrpath cpio cpp diffstat diffutils file findutils gawk gcc gcc-c++ git glibc-devel glibc-langpack-en gzip hostname lz4 make patch perl perl-Data-Dumper perl-File-Compare perl-File-Copy perl-FindBin perl-Text-ParseWords perl-Thread-Queue perl-bignum perl-locale python python3 python3-devel python3-GitPython python3-jinja2 python3-pexpect python3-pip python3-setuptools rpcgen socat tar texinfo unzip wget which xz zstd SDL-devel xterm mesa-libGL-devel nano sudo
+```
+
+Alternativa (verificar estos paquetes según el contenedor actual):
+```bash
+sudo dnf install -y
+gcc gcc-c++ make patch diffutils git tar python3 python3-pip python3-devel
+which findutils wget file bzip2 gzip unzip perl perl-Data-Dumper perl-Text-ParseWords
+perl-Thread-Queue socat xz chrpath cpio desktop-file-utils hostname lz4 rpcgen sudo nano @development
+```
+4. Configuración de idioma
+
+```bash
+dnf install -y glibc-all-langpacks
+echo 'LANG=en_US.UTF-8' > /etc/locale.conf
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+```
+5. Preparación del entorno Yocto
+
+```bash
+cd ~/tools
+git clone git://git.yoctoproject.org/poky
+cd poky
+git checkout -t origin/kirkstone -b my-kirkstone
+git pull
+```
+
+Inicializar el entorno:
+```bash
+source oe-init-build-env rpi-build
+```
+6. Agregar capa de Raspberry Pi
+
+```bash
+cd ~/tools/poky
+git clone https://git.yoctoproject.org/meta-raspberrypi
+cd meta-raspberrypi/
+git checkout -t origin/kirkstone -b my-kirkstone
+git pull
+```
+
+Registrar la capa en bblayers.conf:
+```bash
+cd ~/tools/poky/rpi-build
+bitbake-layers add-layer ../meta-raspberrypi
+```
+
+Nota: También puede ubicarse en `~/tools/meta-raspberrypi` para uso compartido.
+
+7. Configuración de compilación para Raspberry Pi 4
+
+Editar conf/local.conf:
+```bash
+cd ~/tools/poky/rpi-build/
+vi conf/local.conf
+```
+
+Modificar dentro de local.conf:
+```bash
+MACHINE ??= "raspberrypi4"
+DL_DIR ?= "/home/user/tools/poky/downloads"
+SSTATE_DIR ?= "/home/user/tools/poky/sstate-cache"
+BB_HASHSERVE_UPSTREAM = "hashserv.yoctoproject.org:8686"
+SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+IMAGE_FSTYPES += "wic.vmdk"
+```
+
+Agregar al final de oe-init-build-env:
+```bash
+export DL_DIR=/home/user/tools/poky/downloads
+export SSTATE_DIR=/home/user/tools/poky/sstate-cache
+```
+
+
+Nota: Aquí puede incluir su capa de personalización "custom" si aplica.
+
+8. Generación y copia de imagen
+
+```bash
+cd ~/tools/poky/rpi-build/tmp/deploy/images/
+sudo bmaptool copy <image file>.rootfs.wic.bz2 --bmap <image file>.rootfs.wic.bmap <device>
+```
+
+Referencias
+
+[Site] https://docs.yoctoproject.org/ref-manual/system-requirements.html
+
+[Site] https://git.yoctoproject.org/meta-raspberrypi/
+
+[Site] https://docs.yoctoproject.org/brief-yoctoprojectqs/
+
+[Site] https://github.com/agherzan/meta-raspberrypi
