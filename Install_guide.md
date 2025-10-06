@@ -110,7 +110,7 @@ cd ~/tools/poky/rpi-build
 bitbake-layers add-layer ../meta-raspberrypi
 ```
 
-Nota: También puede ubicarse en `~/tools/meta-raspberrypi` para uso compartido.
+Nota: También puede ubicarse en `~/tools/meta-raspberrypi` para uso compartido en futuras builds que utilicen una Raspberry pi.
 
 7. Configuración de compilación para Raspberry Pi 4
 
