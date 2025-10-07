@@ -3,6 +3,16 @@ Guía de compilación Yocto para Raspberry Pi 4
 Entorno: RHEL 10 / Fedora 42 usando Toolbox o Podman
 1. Preparación del entorno
 
+Instalación de Toolbox en un host Fedora / RHEL 10
+```bash
+sudo dnf install toolbox
+```
+Si desea usar Podman
+
+```bash
+sudo dnf -y install podman
+```
+
 Crear el directorio de trabajo:
 ```bash
 mkdir ~/tools
