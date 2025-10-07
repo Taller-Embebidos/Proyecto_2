@@ -49,7 +49,7 @@ useradd -m -u 1000 -s /bin/bash build
 passwd build
 ```
 El usuario se llamará build.
-¨passwd build" es opcional (para crear una contraseña del ususrio)
+¨passwd build" es opcional (para crear una contraseña del usuario)
 
 3. Instalación de dependencias
 
