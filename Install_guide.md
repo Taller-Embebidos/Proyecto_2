@@ -11,19 +11,19 @@ Creación del contenedor
 
 Usando Toolbox (recomendado):
 ```bash
-toolbox create --image registry.access.redhat.com/ubi9/ubi:9.6 yocto
+toolbox create --image registry.fedoraproject.org/fedora-toolbox:40 yocto
 ```
 
 Usando Podman:
 ```bash
-podman run -it --name yocto --replace -v /home/alfaquillo/tools:/tools:z fedora:40 /bin/bash
+podman run -it --name yocto --replace -v /home/alfaquillo/tools:/tools:z registry.fedoraproject.org/fedora-toolbox:40 /bin/bash
 ```
 
 Notas:
 
     En este caso se comparte la carpeta `~/tools` del host con el contenedor
 
-    Se utiliza la imagen de RHEL 9.6 como contenedor (no es oficial para yocto pero funciona correctamente) con nombre `yocto`
+    Se utiliza la imagen de Fedora 40 como contenedor con un alias `yocto`
 
 2. Ingreso al contenedor
 
@@ -46,32 +46,24 @@ Consideraciones:
 Crear usuario no root en podman:
 ```bash
 useradd -m -u 1000 -s /bin/bash build
-passwd build # opcional
+passwd build
 ```
+El usuario se llamará build
+passwd build es opcional (para crear una contraseña del ususrio)
 
-Cambiar a usuario build (solo necesario al ejecutar BitBake):
-```bash
-su - build
-```
+3. Instalación de dependencias
 
-Salir y volver a root:
+Ingresar en usuario root solo para instalar los paquetes (aplica para Toolbox, en el caso de podman estamos en usuario root)
+
 ```bash
-exit
+su
 ```
-3. Instalación de dependencias 
 
 Instalar los paquetes requeridos para la compilación:
 ```bash
-dnf install -y @development bzip2 ccache chrpath cpio cpp diffstat diffutils file findutils gawk gcc gcc-c++ git glibc-devel glibc-langpack-en gzip hostname lz4 make patch perl perl-Data-Dumper perl-File-Compare perl-File-Copy perl-FindBin perl-Text-ParseWords perl-Thread-Queue perl-bignum perl-locale python python3 python3-devel python3-GitPython python3-jinja2 python3-pexpect python3-pip python3-setuptools rpcgen socat tar texinfo unzip wget which xz zstd SDL-devel xterm mesa-libGL-devel nano sudo
+dnf install -y @development-tools bzip2 ccache chrpath cpio cpp diffstat diffutils file findutils gawk gcc gcc-c++ git glibc-devel glibc-langpack-en gzip hostname lz4 make patch perl perl-Data-Dumper perl-File-Compare perl-File-Copy perl-FindBin perl-Text-ParseWords perl-Thread-Queue perl-bignum perl-locale python python3 python3-devel python3-GitPython python3-jinja2 python3-pexpect python3-pip python3-setuptools rpcgen socat tar texinfo unzip wget which xz zstd SDL-devel xterm mesa-libGL-devel nano sudo
 ```
 
-Alternativa (verificar estos paquetes según el contenedor actual):
-```bash
-sudo dnf install -y
-gcc gcc-c++ make patch diffutils git tar python3 python3-pip python3-devel
-which findutils wget file bzip2 gzip unzip perl perl-Data-Dumper perl-Text-ParseWords
-perl-Thread-Queue socat xz chrpath cpio desktop-file-utils hostname lz4 rpcgen sudo nano @development
-```
 4. Configuración de idioma
 
 ```bash
@@ -80,6 +72,24 @@ echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 ```
+Finalmente ya puede salir de superusuario
+
+```bash
+exit
+```
+Y volverá a usuario normal
+
+En podman, requerimos entrar en modo usuario para compilar
+
+```bash
+su - build
+```
+
+Salir y volver a root:
+```bash
+exit
+```
+
 5. Preparación del entorno Yocto
 
 ```bash
@@ -139,7 +149,13 @@ export SSTATE_DIR=/home/user/tools/poky/sstate-cache
 
 Nota: Aquí puede incluir su capa de personalización "custom" si aplica.
 
-8. Generación y copia de imagen
+8. Compilación de imagen mínima
+
+```
+bitbake core-image-minimal
+```
+
+10. Generación y copia de imagen
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
