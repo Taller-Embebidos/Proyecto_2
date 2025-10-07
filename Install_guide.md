@@ -48,8 +48,8 @@ Crear usuario no root en podman:
 useradd -m -u 1000 -s /bin/bash build
 passwd build
 ```
-El usuario se llamará build
-passwd build es opcional (para crear una contraseña del ususrio)
+El usuario se llamará build.
+¨passwd build" es opcional (para crear una contraseña del ususrio)
 
 3. Instalación de dependencias
 
