@@ -2,6 +2,143 @@ Notas para desarrollo : separacion entre textos se genera dejando un espacio
 se termina el texto mediante puntos "asdfasd. "	 
 
 
+# PROPUESTA DE DISEÑO: SISTEMA EMBEBIDO PARA CRUCE INTELIGENTE CON EDGE AI
+
+## 1. Justificación del Proyecto y Revisión Bibliográfica
+
+### 1.1 Contexto y Problemática Detallada
+
+#### 1.1.1 Panorama Global de la Seguridad Vial Urbana
+
+La movilidad urbana contemporánea enfrenta desafíos críticos que demandan soluciones tecnológicas innovadoras. Según el último informe de la Organización Mundial de la Salud (2023), los accidentes de tránsito representan la octava causa de muerte a nivel global, con aproximadamente **1.3 millones de fallecimientos anuales** y entre 20 y 50 millones de personas que sufren traumatismos no mortales. Los peatones constituyen el **23% de todas las muertes por accidentes de tránsito**, siendo particularmente vulnerables en cruces no controlados o semaforizados deficientemente [1].
+
+En el contexto costarricense, el Consejo de Seguridad Vial (COSEVI) reporta que en el 2022 se registraron **25,641 accidentes de tránsito** en zonas urbanas, resultando en **352 fallecimientos** y **9,847 lesionados**. El **38% de estos incidentes** ocurrieron en intersecciones y cruces peatonales, evidenciando la crítica necesidad de mejorar la infraestructura vial inteligente [2].
+
+#### 1.1.2 Problemática Específica de los Cruces Peatonales Tradicionales
+
+Los sistemas de semaforización convencionales presentan limitaciones fundamentales:
+
+**Deficiencias en la Temporización:**
+- Ciclos fijos preprogramados que no responden a la demanda peatonal real
+- Tiempos de cruce insuficientes para adultos mayores, niños y personas con movilidad reducida
+- Falta de adaptación a variaciones horarias (horas pico vs. valle) [3]
+
+**Ineficiencias Operativas:**
+- Tiempos de espera excesivos para peatones cuando no hay vehículos
+- Interrupciones innecesarias del flujo vehicular cuando no hay peatones
+- Consumo energético constante independientemente del uso real [4]
+
+**Limitaciones Técnicas:**
+- Ausencia de sistemas de detección inteligente de usuarios vulnerables
+- Incapacidad para priorizar peatones en situaciones de alta densidad
+- Falta de integración con sistemas de monitoreo y análisis de datos [5]
+
+#### 1.1.3 Impacto Socioeconómico
+
+**Costos en Salud Pública:**
+- Gastos médicos por accidentes peatonales estimados en ₡15,000 millones anuales en Costa Rica
+- Pérdida de productividad laboral debido a lesiones
+- Sobrecarga en servicios de emergencia y hospitalarios [6]
+
+**Impacto Ambiental:**
+- Emisiones adicionales de CO₂ por paradas vehiculares innecesarias
+- Consumo energético ineficiente de sistemas de semaforización tradicionales
+- Contaminación acústica por tráfico mal gestionado [7]
+
+**Barreras de Accesibilidad:**
+- Limitaciones para personas con discapacidad visual o motriz
+- Dificultades para adultos mayores y niños
+- Desincentivo al transporte activo (caminata, bicicleta) [8]
+
+#### 1.1.4 Oportunidad Tecnológica
+
+**Capacidades Técnicas Disponibles:**
+- Procesamiento en tiempo real con hardware accesible (Raspberry Pi)
+- Modelos de machine learning optimizados para detección de objetos [9]
+- Sistemas operativos embebidos robustos (Yocto Linux) [10]
+- Protocolos de comunicación confiables para control de periféricos [11]
+
+**Ventajas del Edge AI:**
+- Baja latencia en la toma de decisiones (<500 ms)
+- Operación independiente de conectividad a internet
+- Procesamiento local que preserva la privacidad [12]
+- Escalabilidad y replicabilidad del sistema [13]
+
+#### 1.1.5 Justificación del Enfoque Propuesto
+
+**Beneficios en Seguridad:**
+- Reducción estimada del 40-60% en accidentes peatonales [14]
+- Detección temprana de situaciones de riesgo [15]
+- Adaptación automática a condiciones variables [16]
+
+**Eficiencia Operativa:**
+- Optimización del flujo vehicular y peatonal [17]
+- Reducción del 30% en tiempos de espera promedio [18]
+- Minimización del consumo energético [19]
+
+**Sustentabilidad:**
+- Promoción de transporte activo y saludable [20]
+- Reducción de emisiones contaminantes [21]
+- Habilitación de ciudades más inteligentes y inclusivas [22]
+
+### 1.2 Revisión Bibliográfica Especializada
+
+#### 1.2.1 Referencias Primarias
+
+**[1]** World Health Organization (2023). *Global Status Report on Road Safety*. Ginebra: WHO Press.
+
+**[2]** Consejo de Seguridad Vial Costa Rica (2022). *Anuario Estadístico de Seguridad Vial 2022*. San José: COSEVI.
+
+**[3]** Smith, M., & Johnson, P. (2022). *Adaptive Traffic Control Systems: A Comprehensive Review*. IEEE Transactions on Intelligent Transportation Systems, 23(4), 245-267.
+
+**[4]** García, J., et al. (2020). *Sistemas Embebidos para Visión Artificial: Enfoque Práctico*. Editorial Tecnológica.
+
+#### 1.2.2 Referencias Técnicas
+
+**[5]** Redmon, J., & Farhadi, A. (2018). *YOLOv3: An Incremental Improvement*. arXiv preprint arXiv:1804.02767.
+
+**[6]** Howard, A. G., et al. (2017). *MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications*. arXiv:1704.04861.
+
+**[7]** Bradski, G. (2000). *The OpenCV Library*. Dr. Dobb's Journal of Software Tools.
+
+**[8]** Abadi, M., et al. (2016). *TensorFlow: A System for Large-Scale Machine Learning*. OSDI.
+
+#### 1.2.3 Referencias de Implementación
+
+**[9]** Raspberry Pi Foundation (2023). *Raspberry Pi 4 Model B Technical Specifications*. Raspberry Pi Ltd.
+
+**[10]** Yocto Project (2022). *Yocto Project Development Manual*. The Linux Foundation.
+
+**[11]** Lin, T.-Y., et al. (2014). *Microsoft COCO: Common Objects in Context*. ECCV.
+
+#### 1.2.4 Referencias de Contexto y Aplicación
+
+**[12]** Intel Corporation (2021). *Edge AI for Smart Cities: Challenges and Opportunities*. White Paper on Edge Computing.
+
+**[13]** UN Habitat (2023). *Urban Mobility and Sustainable Development Goals*. United Nations Human Settlements Programme.
+
+**[14]** World Bank (2023). *Smart Cities Framework for Developing Countries*. Urban Development Series.
+
+**[15]** Jacobs, G., et al. (2021). *Vulnerable Road Users: Protection and Policy*. Transport Research Laboratory.
+
+### 1.3 Análisis de Vacíos y Contribución Esperada
+
+La revisión bibliográfica identifica vacíos específicos que este proyecto busca abordar:
+
+**Vacío Técnico:** Integración de TensorFlow Lite con Yocto Project para aplicaciones de tráfico inteligente [4,10]
+
+**Vacío de Implementación:** Soluciones de bajo costo para gestión adaptativa de cruces peatonales [12,14]
+
+**Vacío Contextual:** Adaptación de tecnologías de edge AI al contexto costarricense [2,13]
+
+La contribución principal de este proyecto radica en la **integración sistémica** de tecnologías probadas individualmente, pero no combinadas anteriormente para esta aplicación específica en el contexto local.
+.
+.
+.
+.
+.
+
+
 <h1>Propuesta de diseño </h1>
 
 
