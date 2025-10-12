@@ -348,25 +348,3 @@ meta-cruce-inteligente<br>
 ## 9. Planeamiento de la Ejecución
 
 ### 9.1 Diagrama de Gantt
-
-```mermaid
-gantt
-    title Cronograma del Proyecto - Cruce Inteligente
-    dateFormat  YYYY-MM-DD
-    section Diseño
-    Especificación Requerimientos     :2025-09-20, 10d
-    Arquitectura Sistema              :2025-09-30, 14d
-    Diseño Detallado                  :2025-10-14, 10d
-    section Desarrollo
-    Configuración Yocto               :2025-09-25, 21d
-    Integración TensorFlow Lite       :2025-10-16, 14d
-    Desarrollo Aplicación             :2025-10-20, 21d
-    section Pruebas
-    Pruebas Unitarias                 :2025-10-30, 14d
-    Pruebas Integración               :2025-11-13, 7d
-    Validación Final                  :2025-11-20, 7d
-    section Documentación
-    Propuesta Diseño                  :crit, 2025-10-13, 1d
-    Documentación Técnica             :2025-11-25, 7d
-    Preparación Demostración          :2025-11-27, 7d
-
