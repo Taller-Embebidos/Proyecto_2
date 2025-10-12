@@ -1,11 +1,11 @@
 # PROPUESTA DE DISEÑO: SISTEMA EMBEBIDO PARA CRUCE INTELIGENTE CON EDGE AI
 
 **Fecha de entrega:** 13 de octubre de 2025  
-**Equipo:** [Nombre del equipo]  
+**Equipo:** CMR  
 **Integrantes:**  
-- [Nombre 1] - Rol  
-- [Nombre 2] - Rol  
-- [Nombre 3] - Rol  
+- Carlos Elizondo A.  - Director de proyecto 
+- Manuel Garita B.    - Auditor / Investigador 
+- Rodrigo Venegas M   - Líder técnico
 
 ---
 
