@@ -187,91 +187,186 @@ El sistema operará como nodo autónomo con dos cámaras estratégicamente posic
 
 ### 4.2 Diagrama de Casos de Uso
 
-Sistema de Cruce Inteligente.
-Sistema de Cruce Inteligente
-├── Actor: Peatón
-│   ├── Cruzar calle
-│   └── Esperar en cruce
-├── Actor: Vehículo
-│   ├── Circular por vía
-│   └── Detenerse en semáforo
-├── Actor: Sistema Embebido
-│   ├── Detectar peatones
-│   ├── Clasificar vehículos
-│   ├── Controlar semáforo
-│   └── Registrar eventos
-└── Actor: Administrador
-    ├── Monitorear estado
-    └── Obtener reportes
+
+Sistema de Cruce Inteligente<br>
+├── Actor: Peatón<br>
+│   ├── Cruzar calle<br>
+│   └── Esperar en cruce<br>
+├── Actor: Vehículo<br>
+│   ├── Circular por vía<br>
+│   └── Detenerse en semáforo<br>
+├── Actor: Sistema Embebido<br>
+│   ├── Detectar peatones<br>
+│   ├── Clasificar vehículos<br>
+│   ├── Controlar semáforo<br>
+│   └── Registrar eventos<br>
+└── Actor: Administrador<br>
+    ├── Monitorear estado<br>
+    └── Obtener reportes<br>
     
-SDgvzsf
+
+### 4.3 Diagrama de Secuencia
+
+## 5. Vista Funcional del Sistema
+
+### 5.1 Descomposición Funcional
+
+Sistema Cruce Inteligente<br>
+├── Gestión de Adquisición<br>
+│ ├── Inicialización de Cámaras<br>
+│ ├── Captura de Frames<br>
+│ └── Sincronización Temporal<br>
+├── Procesamiento de Video<br>
+│ ├── Preprocesamiento<br>
+│ ├── Corrección de Distorsión<br>
+│ └── Mejora de Calidad<br>
+├── Inferencia de ML<br>
+│ ├── Carga de Modelos<br>
+│ ├── Detección de Objetos<br>
+│ ├── Clasificación<br>
+│ └── Seguimiento<br>
+├── Lógica de Control<br>
+│ ├── Evaluación de Condiciones<br>
+│ ├── Toma de Decisiones<br>
+│ └── Gestión de Tiempos<br>
+└── Control de Hardware<br>
+├── GPIO Semáforo<br>
+├── Gestión de Energía<br>
+└── Monitoreo de Estado<br>
 
 
+---
+
+## 6. Arquitectura del Sistema Propuesto
+
+### 6.1 Diagrama de Arquitectura General
 
 
++--------------------------------------------------------------------------------+<br>
+| APLICACIÓN PRINCIPAL |<br>
++---------------------------------+----------------------------------------------+<br>
+| MÓDULO VISIÓN                              | MÓDULO CONTROL |<br>
+| +-----------------------------+ | +----------------------------------------+ |<br>
+| | - Captura Video             | | |  - Lógica de Decisiones | |<br>
+| | - Preprocesamiento          | | |  - Gestión de Estados | |<br>
+| | - Inferencia TF Lite        | | |  - Control GPIO | |<br>
+| +-----------------------------+ | +----------------------------------------+ |<br>
++---------------------------------+----------------------------------------------+<br>
+| SISTEMA OPERATIVO YOCTO LINUX |<br>
+| +--------------------------------------------------------------------------+ |<br>
+| | - Kernel Linux 6.1            | - Drivers Camera | |<br>
+| | - Python 3.9                  | - OpenCV 4.7     | |<br>
+| | - TensorFlow Lite 2.13        | - GPIO Library   | |<br>
++--------------------------------------------------------------------------------+<br>
+| HARDWARE RASPBERRY PI 4 |<br>
+| +--------------------------+ +--------------------+ +----------------------+ |<br>
+| | Cámara USB 1 |               | Cámara USB 2 |        | GPIO Semáforo | |<br>
+| +--------------------------+ +--------------------+ +-----------------+ |<br>
++--------------------------------------------------------------------------------+<br>
+
+### 6.2 Especificación de Componentes
+
+**Hardware:**
+- 2x Raspberry Pi 4 Model B (4GB RAM)
+- 2x Cámara USB Logitech C920
+- Módulo de relé para control semáforo
+- Fuente de poder 5V 3A
+
+**Software:**
+- Yocto Linux (core-image-base)
+- Python 3.9.16
+- OpenCV 4.7.0
+- TensorFlow Lite 2.13.0
+
+---
+## 7. Análisis de Dependencias
+
+### 7.1 Árbol de Dependencias de Software
 
 
+meta-cruce-inteligente<br>
+├── meta-raspberrypi<br>
+│ ├── linux-raspberrypi_6.1<br>
+│ ├── firmware<br>
+│ └── bootfiles<br>
+├── meta-python<br>
+│ ├── python3<br>
+│ ├── python3-opencv<br>
+│ └── python3-numpy<br>
+├── meta-tensorflow<br>
+│ └── tensorflow-lite<br>
+├── meta-oe<br>
+│ ├── opencv<br>
+│ └── libusb<br>
+└── custom-recipes<br>
+├── cruce-inteligente-app<br>
+├── system-config<br>
+└── startup-scripts<br>
 
 
+### 7.2 Dependencias Críticas
 
+**Python:**
+- opencv-python >= 4.7.0
+- tensorflow-lite >= 2.13.0
+- numpy >= 1.24.0
+- RPi.GPIO >= 0.7.0
 
+**Sistema:**
+- Linux kernel >= 6.1
+- USB drivers
+- V4L2 framework
 
+---
 
+## 8. Estrategia de Integración de la Solución
 
-.
-.
-.
-.
-.
+### 8.1 Flujo de Integración
 
+**Fase 1: Desarrollo de Imagen Base**
+- Configuración de Yocto Project
+- Integración de capas necesarias
+- Construcción de imagen mínima
 
-<h1>Propuesta de diseño </h1>
+**Fase 2: Integración de ML**
+- Compilación de TensorFlow Lite
+- Integración con OpenCV
+- Optimización para ARM
 
+**Fase 3: Desarrollo de Aplicación**
+- Implementación de módulo de visión
+- Desarrollo de lógica de control
+- Integración con GPIO
 
-<h2>1. Justificación del proyecto y revisión bibliográfica. </h2>
-La introducción refuerza la justificación del desarrollo del proyecto soportadose en 10 referencias adicionales a las
-expuestas en el instructivo.
+**Fase 4: Pruebas y Validación**
+- Pruebas unitarias por módulo
+- Pruebas de integración
+- Validación en ambiente real
 
-<h2>2. Descripción y síntesis del problema.</h2>
+---
 
- Logra una sintesis precisa del problema a resolver con el derarrollo del sistema.
+## 9. Planeamiento de la Ejecución
 
+### 9.1 Diagrama de Gantt
 
-<h2> 3. Gestión de los requerimientos.         </h2>
-
-Detalla los requerimientos del sistema producto del análisis del problema y se descomponen los requerimientosdados en el  nstructivo para derivarrequerimientos más específicos siguiendo un formato estándar.
-
-
-<h2>      4. Vista operacional del sistema.     </h2>
-
-Se presenta y sedescribe en detalle un concepto de operaciones del sistema, diagrama de casos de uso y secuencia para los segmentos y elementos del sistema.
-
-<h2>       5. Vista funcional del sistema.     </h2>
-
-Se ilustra y describe completamente la descomposición del sistema considerando las funcionalidades identificadas de acuerdo al análisis de requisistos y el concepto de operaciones propuesto.
-
-
-<h2>  6. Arquitectura del sistema propuesto.         </h2>
-
-Se ilustra y describe un diagrama que mapea las funciones e interfaces del sistema e  componentes de software y hardware descritas por los requerimientos 
-
-
-
-<h2>  7. Análisis de dependencias.         </h2>
-Se ilustra un arbol de dependencias donde se presenten y describan los paquetes de software necesarios y sus relaciones para la implementación de la imagen del sistema  perativo con yocto
-
-
-<h2>  8. Estrategia de integración de la solución.        </h2>
-
-Se ilustra y describe una arquitectura integrada de hardware y software  para la  síntesis de la solución final.  
-
-
-<h2> 9. Planeamiento de la ejecución.          </h2>
-
-Se incluye un diagrama de gantt y una lista de actividades e hitos para el desarrollo del proyecto.
-
-
-<h2> 10. Conclusiones o aspectos a resaltar de la propuesta presentada.         </h2>
-
-Se resumen concretamente los aspectos más relevantes de la propuesta de diseño, así como aspectos considerar para su implementación.
+```mermaid
+gantt
+    title Cronograma del Proyecto - Cruce Inteligente
+    dateFormat  YYYY-MM-DD
+    section Diseño
+    Especificación Requerimientos     :2025-09-20, 10d
+    Arquitectura Sistema              :2025-09-30, 14d
+    Diseño Detallado                  :2025-10-14, 10d
+    section Desarrollo
+    Configuración Yocto               :2025-09-25, 21d
+    Integración TensorFlow Lite       :2025-10-16, 14d
+    Desarrollo Aplicación             :2025-10-20, 21d
+    section Pruebas
+    Pruebas Unitarias                 :2025-10-30, 14d
+    Pruebas Integración               :2025-11-13, 7d
+    Validación Final                  :2025-11-20, 7d
+    section Documentación
+    Propuesta Diseño                  :crit, 2025-10-13, 1d
+    Documentación Técnica             :2025-11-25, 7d
+    Preparación Demostración          :2025-11-27, 7d
 
