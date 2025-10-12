@@ -253,36 +253,32 @@ Sistema Cruce Inteligente<br>
 
 ### 6.1 Diagrama de Arquitectura General
 
-+--------------------------------------------------------------------------------+
-| APLICACIÓN PRINCIPAL |
-+---------------------------------+----------------------------------------------+
-| MÓDULO VISIÓN | MÓDULO CONTROL |
-| +-----------------------------+ | +----------------------------------------+ |
-| | - Captura Video | | | - Lógica de Decisiones | |
-| | - Preprocesamiento | | | - Gestión de Estados | |
-| | - Inferencia TF Lite | | | - Control GPIO | |
-| +-----------------------------+ | +----------------------------------------+ |
-+---------------------------------+----------------------------------------------+
-| SISTEMA OPERATIVO YOCTO LINUX |
-| +--------------------------------------------------------------------------+ |
-| | - Kernel Linux 6.1 | - Drivers Camera | |
-| | - Python 3.9 | - OpenCV 4.7 | |
-| | - TensorFlow Lite 2.13 | - GPIO Library | |
-+--------------------------------------------------------------------------------+
-| HARDWARE RASPBERRY PI 4 |
-| +--------------------------+ +--------------------------+ +-----------------+ |
-| | Cámara USB 1 | | Cámara USB 2 | | GPIO Semáforo | |
-| +--------------------------+ +--------------------------+ +-----------------+ |
-+--------------------------------------------------------------------------------+
-
++---------------------------------------------------------------+
+|                     APLICACIÓN PRINCIPAL                      |
++---------------------------------------------------------------+
+|            MÓDULO VISIÓN              |     MÓDULO CONTROL    |
+|---------------------------------------+------------------------|
+| 1. Captura Video                      | 4. Lógica de Decisiones|
+| 2. Preprocesamiento                   | 5. Gestión de Estados  |
+| 3. Inferencia TF Lite                 |                        |
++---------------------------------------------------------------+
+|               SISTEMA OPERATIVO YOCTO LINUX                   |
++---------------------------------------------------------------+
+| 6. Kernel Linux 5.15                  | 8. Drivers Camera      |
+| 7. Python 3.10                        | 9. OpenCV 4.5          |
+| 10. TensorFlow Lite 2.13              |                        |
++---------------------------------------------------------------+
+|                  HARDWARE RASPBERRY PI 4                      |
++---------------------------------------------------------------+
+| 11. Cámara USB 1             |  12. Cámara USB 2              |
++---------------------------------------------------------------+
 
 
 ### 6.2 Especificación de Componentes
 
 **Hardware:**
-- 2x Raspberry Pi 4 Model B (4GB RAM)
-- 2x Cámara USB Logitech C920
-- Módulo de relé para control semáforo
+- 1x Raspberry Pi 4 Model B (4GB RAM)
+- 2x Cámara USB 
 - Fuente de poder 5V 3A
 
 **Software:**
@@ -297,24 +293,24 @@ Sistema Cruce Inteligente<br>
 
 ### 7.1 Árbol de Dependencias de Software 
 
-meta-cruce-inteligente
-├── meta-raspberrypi
-│ ├── linux-raspberrypi_6.1
-│ ├── firmware
-│ └── bootfiles
-├── meta-python
-│ ├── python3
-│ ├── python3-opencv
-│ └── python3-numpy
-├── meta-tensorflow
-│ └── tensorflow-lite
-├── meta-oe
-│ ├── opencv
-│ └── libusb
-└── custom-recipes
-├── cruce-inteligente-app
-├── system-config
-└── startup-scripts
+meta-cruce-inteligente<br>
+├── meta-raspberrypi<br>
+│ ├── linux-raspberrypi_6.1<br>
+│ ├── firmware<br>
+│ └── bootfiles<br>
+├── meta-python<br>
+│ ├── python3<br>
+│ ├── python3-opencv<br>
+│ └── python3-numpy<br>
+├── meta-tensorflow<br>
+│ └── tensorflow-lite<br>
+├── meta-oe<br>
+│ ├── opencv<br>
+│ └── libusb<br>
+└── custom-recipes<br>
+├── cruce-inteligente-app<br>
+├── system-config<br>
+└── startup-scripts<br>
 
 
 ### 7.2 Dependencias Críticas
