@@ -166,7 +166,6 @@ El problema central es la desconexión entre la operación del semáforo peatona
 | RF004 | Control de Semáforo | Controlar semáforo peatonal mediante aprendizaje automatico basado en detecciones | Alta |
 | RF005 | Seguimiento de Objetos | Realizar seguimiento de peatones y vehículos entre frames | Media |
 | RF006 | Gestión de Eventos | Registrar eventos de detección y cambios de semáforo | Baja |
-| RF007 | Administración Remota | Establecer una conexion remota entre el dispocitivo y un administrador | Baja |
 
 ### 3.2 Requerimientos No Funcionales
 
@@ -206,39 +205,46 @@ Sistema de Cruce Inteligente<br>
 
 
 ### 4.3 Diagrama de Secuencia
-Peatón → Cámara → RPi4 → TensorFlow Lite → GPIO → Semáforo
-↓ ↓ ↓ ↓ ↓ ↓
-Aparece → Frame → Preprocess → Infer → Control → Activar
+Agregar imagen
 
-
----
-
+Peatón          Cámara        RPi4        TensorFlow    Semáforo
+  |               |            |              |            |            
+  |-- Aparece---->|            |              |            |            
+  |               |---Frame--->|              |            |            
+  |               |            |--Preprocess->|            |           
+  |               |            |              |            |            
+  |               |            |---Infer----->|            |            
+  |               |            |              |            |            
+  |               |            |<--Result-----|            |            
+  |               |            |              |            |            
+  |               |            |-----------Activar-------> |            
+  |               |            |              |            |
+  |               |            |              |            |            
 ## 5. Vista Funcional del Sistema
 
 ### 5.1 Descomposición **Funcional**
 
-Sistema Cruce Inteligente
-├── Gestión de Adquisición
-│ ├── Inicialización de Cámaras
-│ ├── Captura de Frames
-│ └── Sincronización Temporal
-├── Procesamiento de Video
-│ ├── Preprocesamiento
-│ ├── Corrección de Distorsión
-│ └── Mejora de Calidad
-├── Inferencia de ML
-│ ├── Carga de Modelos
-│ ├── Detección de Objetos
-│ ├── Clasificación
-│ └── Seguimiento
-├── Lógica de Control
-│ ├── Evaluación de Condiciones
-│ ├── Toma de Decisiones
-│ └── Gestión de Tiempos
-└── Control de Hardware
-├── GPIO Semáforo
-├── Gestión de Energía
-└── Monitoreo de Estado
+Sistema Cruce Inteligente<br>
+├── Gestión de Adquisición<br>
+│ ├── Inicialización de Cámaras<br>
+│ ├── Captura de Frames<br>
+│ └── Sincronización Temporal<br>
+├── Procesamiento de Video<br>
+│ ├── Preprocesamiento<br>
+│ ├── Corrección de Distorsión<br>
+│ └── Mejora de Calidad<br>
+├── Inferencia de ML<br>
+│ ├── Carga de Modelos<br>
+│ ├── Detección de Objetos<br>
+│ ├── Clasificación<br>
+│ └── Seguimiento<br>
+├── Lógica de Control<br>
+│ ├── Evaluación de Condiciones<br>
+│ ├── Toma de Decisiones<br>
+│ └── Gestión de Tiempos<br>
+└── Control de Hardware<br>
+├── Gestión de Energía<br>
+└── Monitoreo de Estado<br>
 
 
 ---
