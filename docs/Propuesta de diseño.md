@@ -221,7 +221,7 @@ Peatón          Cámara        RPi4        TensorFlow    Semáforo
   |               |            |              |            |
   |               |            |              |            |            
 ## 5. Vista Funcional del Sistema
-
+![Mi imagen](Diagrama1.png)
 ### 5.1 Descomposición **Funcional**
 
 Sistema Cruce Inteligente<br>
