@@ -132,6 +132,92 @@ La revisión bibliográfica identifica vacíos específicos que este proyecto bu
 **Vacío Contextual:** Adaptación de tecnologías de edge AI al contexto costarricense [2,13]
 
 La contribución principal de este proyecto radica en la **integración sistémica** de tecnologías probadas individualmente, pero no combinadas anteriormente para esta aplicación específica en el contexto local.
+
+
+---
+
+## 2. Descripción y Síntesis del Problema
+
+### 2.1 Problemática Específica
+Los cruces peatonales convencionales presentan limitaciones críticas que impactan la seguridad y eficiencia del tránsito urbano. La falta de adaptabilidad a condiciones variables genera riesgos para peatones e ineficiencias en el flujo vehicular.
+
+### 2.2 Síntesis del Problema
+El problema central es la desconexión entre la operación del semáforo peatonal y las condiciones reales del cruce, requiriendo un sistema que:
+- Detecte automáticamente la presencia de peatones en tiempo real
+- Clasifique diferentes tipos de usuarios viales (peatones, vehículos, ciclistas)
+- Adapte inteligentemente los tiempos del semáforo según la demanda
+- Opere de manera autónoma con recursos computacionales limitados
+
+---
+
+## 3. Gestión de los Requerimientos
+
+### 3.1 Requerimientos Funcionales
+
+| ID | Requerimiento | Descripción | Prioridad |
+|----|---------------|-------------|-----------|
+| RF001 | Captura de Video | Capturar video en tiempo real desde dos cámaras USB con resolución 720p | Alta |
+| RF002 | Detección de Peatones | Detectar peatones en radio de 5 metros con precisión >90% | Alta |
+| RF003 | Detección de Vehículos | Clasificar vehículos (autos, motos, bicis) con precisión >85% | Media |
+| RF004 | Control de Semáforo | Controlar semáforo peatonal mediante GPIO basado en detecciones | Alta |
+| RF005 | Seguimiento de Objetos | Realizar seguimiento de peatones y vehículos entre frames | Media |
+| RF006 | Gestión de Eventos | Registrar eventos de detección y cambios de semáforo | Baja |
+
+### 3.2 Requerimientos No Funcionales
+
+| ID | Requerimiento | Descripción | Prioridad |
+|----|---------------|-------------|-----------|
+| RNF001 | Tiempo de Respuesta | Inferencia completa en ≤500ms por frame | Alta |
+| RNF002 | Disponibilidad | Operación continua 24/7 con uptime >99% | Alta |
+| RNF003 | Consumo Energético | Consumo máximo de 15W por Raspberry Pi | Media |
+| RNF004 | Imagen del Sistema | Construida con Yocto Project incluyendo dependencias | Alta |
+
+---
+
+## 4. Vista Operacional del Sistema
+
+### 4.1 Concepto de Operaciones (ConOps)
+El sistema operará como nodo autónomo con dos cámaras estratégicamente posicionadas. El flujo operacional incluye:
+1. Adquisición continua de video
+2. Preprocesamiento de imágenes
+3. Ejecución de modelos TensorFlow Lite
+4. Toma de decisiones basada en detecciones
+5. Control de señales lumínicas
+6. Registro local de eventos
+
+### 4.2 Diagrama de Casos de Uso
+
+Sistema de Cruce Inteligente.
+Sistema de Cruce Inteligente
+├── Actor: Peatón
+│   ├── Cruzar calle
+│   └── Esperar en cruce
+├── Actor: Vehículo
+│   ├── Circular por vía
+│   └── Detenerse en semáforo
+├── Actor: Sistema Embebido
+│   ├── Detectar peatones
+│   ├── Clasificar vehículos
+│   ├── Controlar semáforo
+│   └── Registrar eventos
+└── Actor: Administrador
+    ├── Monitorear estado
+    └── Obtener reportes
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .
 .
 .
