@@ -187,22 +187,22 @@ El sistema operará como nodo autónomo con dos cámaras estratégicamente posic
 
 ### 4.2 Diagrama de Casos de Uso
 
-Sistema de Cruce Inteligente.
-Sistema de Cruce Inteligente
-├── Actor: Peatón
-│   ├── Cruzar calle
-│   └── Esperar en cruce
-├── Actor: Vehículo
-│   ├── Circular por vía
-│   └── Detenerse en semáforo
-├── Actor: Sistema Embebido
-│   ├── Detectar peatones
-│   ├── Clasificar vehículos
-│   ├── Controlar semáforo
-│   └── Registrar eventos
-└── Actor: Administrador
-    ├── Monitorear estado
-    └── Obtener reportes
+
+Sistema de Cruce Inteligente<br>
+├── Actor: Peatón<br>
+│   ├── Cruzar calle<br>
+│   └── Esperar en cruce<br>
+├── Actor: Vehículo<br>
+│   ├── Circular por vía<br>
+│   └── Detenerse en semáforo<br>
+├── Actor: Sistema Embebido<br>
+│   ├── Detectar peatones<br>
+│   ├── Clasificar vehículos<br>
+│   ├── Controlar semáforo<br>
+│   └── Registrar eventos<br>
+└── Actor: Administrador<br>
+    ├── Monitorear estado<br>
+    └── Obtener reportes<br>
     
 
 ### 4.3 Diagrama de Secuencia
@@ -211,28 +211,28 @@ Sistema de Cruce Inteligente
 
 ### 5.1 Descomposición Funcional
 
-Sistema Cruce Inteligente
-├── Gestión de Adquisición
-│ ├── Inicialización de Cámaras
-│ ├── Captura de Frames
-│ └── Sincronización Temporal
-├── Procesamiento de Video
-│ ├── Preprocesamiento
-│ ├── Corrección de Distorsión
-│ └── Mejora de Calidad
-├── Inferencia de ML
-│ ├── Carga de Modelos
-│ ├── Detección de Objetos
-│ ├── Clasificación
-│ └── Seguimiento
-├── Lógica de Control
-│ ├── Evaluación de Condiciones
-│ ├── Toma de Decisiones
-│ └── Gestión de Tiempos
-└── Control de Hardware
-├── GPIO Semáforo
-├── Gestión de Energía
-└── Monitoreo de Estado
+Sistema Cruce Inteligente<br>
+├── Gestión de Adquisición<br>
+│ ├── Inicialización de Cámaras<br>
+│ ├── Captura de Frames<br>
+│ └── Sincronización Temporal<br>
+├── Procesamiento de Video<br>
+│ ├── Preprocesamiento<br>
+│ ├── Corrección de Distorsión<br>
+│ └── Mejora de Calidad<br>
+├── Inferencia de ML<br>
+│ ├── Carga de Modelos<br>
+│ ├── Detección de Objetos<br>
+│ ├── Clasificación<br>
+│ └── Seguimiento<br>
+├── Lógica de Control<br>
+│ ├── Evaluación de Condiciones<br>
+│ ├── Toma de Decisiones<br>
+│ └── Gestión de Tiempos<br>
+└── Control de Hardware<br>
+├── GPIO Semáforo<br>
+├── Gestión de Energía<br>
+└── Monitoreo de Estado<br>
 
 
 ---
@@ -242,28 +242,27 @@ Sistema Cruce Inteligente
 ### 6.1 Diagrama de Arquitectura General
 
 
-+--------------------------------------------------------------------------------+
-| APLICACIÓN PRINCIPAL |
-+---------------------------------+----------------------------------------------+
-| MÓDULO VISIÓN | MÓDULO CONTROL |
-| +-----------------------------+ | +----------------------------------------+ |
-| | - Captura Video | | | - Lógica de Decisiones | |
-| | - Preprocesamiento | | | - Gestión de Estados | |
-| | - Inferencia TF Lite | | | - Control GPIO | |
-| +-----------------------------+ | +----------------------------------------+ |
-+---------------------------------+----------------------------------------------+
-| SISTEMA OPERATIVO YOCTO LINUX |
-| +--------------------------------------------------------------------------+ |
-| | - Kernel Linux 6.1 | - Drivers Camera | |
-| | - Python 3.9 | - OpenCV 4.7 | |
-| | - TensorFlow Lite 2.13 | - GPIO Library | |
-+--------------------------------------------------------------------------------+
-| HARDWARE RASPBERRY PI 4 |
-| +--------------------------+ +--------------------------+ +-----------------+ |
-| | Cámara USB 1 | | Cámara USB 2 | | GPIO Semáforo | |
-| +--------------------------+ +--------------------------+ +-----------------+ |
-+--------------------------------------------------------------------------------+
-
++--------------------------------------------------------------------------------+<br>
+| APLICACIÓN PRINCIPAL |<br>
++---------------------------------+----------------------------------------------+<br>
+| MÓDULO VISIÓN                              | MÓDULO CONTROL |<br>
+| +-----------------------------+ | +----------------------------------------+ |<br>
+| | - Captura Video             | | |  - Lógica de Decisiones | |<br>
+| | - Preprocesamiento          | | |  - Gestión de Estados | |<br>
+| | - Inferencia TF Lite        | | |  - Control GPIO | |<br>
+| +-----------------------------+ | +----------------------------------------+ |<br>
++---------------------------------+----------------------------------------------+<br>
+| SISTEMA OPERATIVO YOCTO LINUX |<br>
+| +--------------------------------------------------------------------------+ |<br>
+| | - Kernel Linux 6.1            | - Drivers Camera | |<br>
+| | - Python 3.9                  | - OpenCV 4.7     | |<br>
+| | - TensorFlow Lite 2.13        | - GPIO Library   | |<br>
++--------------------------------------------------------------------------------+<br>
+| HARDWARE RASPBERRY PI 4 |<br>
+| +--------------------------+ +--------------------+ +----------------------+ |<br>
+| | Cámara USB 1 |               | Cámara USB 2 |        | GPIO Semáforo | |<br>
+| +--------------------------+ +--------------------+ +-----------------+ |<br>
++--------------------------------------------------------------------------------+<br>
 
 ### 6.2 Especificación de Componentes
 
@@ -285,24 +284,24 @@ Sistema Cruce Inteligente
 ### 7.1 Árbol de Dependencias de Software
 
 
-meta-cruce-inteligente
-├── meta-raspberrypi
-│ ├── linux-raspberrypi_6.1
-│ ├── firmware
-│ └── bootfiles
-├── meta-python
-│ ├── python3
-│ ├── python3-opencv
-│ └── python3-numpy
-├── meta-tensorflow
-│ └── tensorflow-lite
-├── meta-oe
-│ ├── opencv
-│ └── libusb
-└── custom-recipes
-├── cruce-inteligente-app
-├── system-config
-└── startup-scripts
+meta-cruce-inteligente<br>
+├── meta-raspberrypi<br>
+│ ├── linux-raspberrypi_6.1<br>
+│ ├── firmware<br>
+│ └── bootfiles<br>
+├── meta-python<br>
+│ ├── python3<br>
+│ ├── python3-opencv<br>
+│ └── python3-numpy<br>
+├── meta-tensorflow<br>
+│ └── tensorflow-lite<br>
+├── meta-oe<br>
+│ ├── opencv<br>
+│ └── libusb<br>
+└── custom-recipes<br>
+├── cruce-inteligente-app<br>
+├── system-config<br>
+└── startup-scripts<br>
 
 
 ### 7.2 Dependencias Críticas
@@ -370,58 +369,4 @@ gantt
     Propuesta Diseño                  :crit, 2025-10-13, 1d
     Documentación Técnica             :2025-11-25, 7d
     Preparación Demostración          :2025-11-27, 7d
-
-.
-.
-
-
-<h1>Propuesta de diseño </h1>
-
-
-<h2>1. Justificación del proyecto y revisión bibliográfica. </h2>
-La introducción refuerza la justificación del desarrollo del proyecto soportadose en 10 referencias adicionales a las
-expuestas en el instructivo.
-
-<h2>2. Descripción y síntesis del problema.</h2>
-
- Logra una sintesis precisa del problema a resolver con el derarrollo del sistema.
-
-
-<h2> 3. Gestión de los requerimientos.         </h2>
-
-Detalla los requerimientos del sistema producto del análisis del problema y se descomponen los requerimientosdados en el  nstructivo para derivarrequerimientos más específicos siguiendo un formato estándar.
-
-
-<h2>      4. Vista operacional del sistema.     </h2>
-
-Se presenta y sedescribe en detalle un concepto de operaciones del sistema, diagrama de casos de uso y secuencia para los segmentos y elementos del sistema.
-
-<h2>       5. Vista funcional del sistema.     </h2>
-
-Se ilustra y describe completamente la descomposición del sistema considerando las funcionalidades identificadas de acuerdo al análisis de requisistos y el concepto de operaciones propuesto.
-
-
-<h2>  6. Arquitectura del sistema propuesto.         </h2>
-
-Se ilustra y describe un diagrama que mapea las funciones e interfaces del sistema e  componentes de software y hardware descritas por los requerimientos 
-
-
-
-<h2>  7. Análisis de dependencias.         </h2>
-Se ilustra un arbol de dependencias donde se presenten y describan los paquetes de software necesarios y sus relaciones para la implementación de la imagen del sistema  perativo con yocto
-
-
-<h2>  8. Estrategia de integración de la solución.        </h2>
-
-Se ilustra y describe una arquitectura integrada de hardware y software  para la  síntesis de la solución final.  
-
-
-<h2> 9. Planeamiento de la ejecución.          </h2>
-
-Se incluye un diagrama de gantt y una lista de actividades e hitos para el desarrollo del proyecto.
-
-
-<h2> 10. Conclusiones o aspectos a resaltar de la propuesta presentada.         </h2>
-
-Se resumen concretamente los aspectos más relevantes de la propuesta de diseño, así como aspectos considerar para su implementación.
 
