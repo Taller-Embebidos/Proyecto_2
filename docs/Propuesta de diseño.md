@@ -205,23 +205,9 @@ Sistema de Cruce Inteligente<br>
 
 
 ### 4.3 Diagrama de Secuencia
-Agregar imagen
-
-Peatón          Cámara        RPi4        TensorFlow    Semáforo
-  |               |            |              |            |            
-  |-- Aparece---->|            |              |            |            
-  |               |---Frame--->|              |            |            
-  |               |            |--Preprocess->|            |           
-  |               |            |              |            |            
-  |               |            |---Infer----->|            |            
-  |               |            |              |            |            
-  |               |            |<--Result-----|            |            
-  |               |            |              |            |            
-  |               |            |-----------Activar-------> |            
-  |               |            |              |            |
-  |               |            |              |            |            
+![Mi imagen](Diagramadesecuencia.png  )         
 ## 5. Vista Funcional del Sistema
-![Mi imagen](Diagrama1.png)
+
 ### 5.1 Descomposición **Funcional**
 
 Sistema Cruce Inteligente<br>
@@ -253,26 +239,7 @@ Sistema Cruce Inteligente<br>
 
 ### 6.1 Diagrama de Arquitectura General
 
-+---------------------------------------------------------------+
-|                     APLICACIÓN PRINCIPAL                      |
-+---------------------------------------------------------------+
-|            MÓDULO VISIÓN              |     MÓDULO CONTROL    |
-|---------------------------------------+------------------------|
-| 1. Captura Video                      | 4. Lógica de Decisiones|
-| 2. Preprocesamiento                   | 5. Gestión de Estados  |
-| 3. Inferencia TF Lite                 |                        |
-+---------------------------------------------------------------+
-|               SISTEMA OPERATIVO YOCTO LINUX                   |
-+---------------------------------------------------------------+
-| 6. Kernel Linux 5.15                  | 8. Drivers Camera      |
-| 7. Python 3.10                        | 9. OpenCV 4.5          |
-| 10. TensorFlow Lite 2.13              |                        |
-+---------------------------------------------------------------+
-|                  HARDWARE RASPBERRY PI 4                      |
-+---------------------------------------------------------------+
-| 11. Cámara USB 1             |  12. Cámara USB 2              |
-+---------------------------------------------------------------+
-
+![Mi imagen](Diagrama1.png)
 
 ### 6.2 Especificación de Componentes
 
