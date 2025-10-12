@@ -137,7 +137,7 @@ Nota: También puede ubicarse en `~/tools/meta-raspberrypi` para uso compartido 
 Editar conf/local.conf:
 ```bash
 cd ~/tools/poky/rpi-build/
-vi conf/local.conf
+nano conf/local.conf
 ```
 
 Modificar dentro de local.conf:
@@ -147,7 +147,6 @@ DL_DIR ?= "/home/user/tools/poky/downloads"
 SSTATE_DIR ?= "/home/user/tools/poky/sstate-cache"
 BB_HASHSERVE_UPSTREAM = "hashserv.yoctoproject.org:8686"
 SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
-IMAGE_FSTYPES += "wic.vmdk"
 ```
 
 Agregar al final de oe-init-build-env:
@@ -159,7 +158,13 @@ export SSTATE_DIR=/home/user/tools/poky/sstate-cache
 
 Nota: Aquí puede incluir su capa de personalización "custom" si aplica.
 
-8. Compilación de imagen mínima
+8. Descarga de dependencias para imagen mínima (opcional), para compilar offline
+
+```
+bitbake core-image-minimal runall=fetch
+
+```
+9. Compilación de imagen mínima
 
 ```
 bitbake core-image-minimal
@@ -169,7 +174,7 @@ bitbake core-image-minimal
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
-sudo bmaptool copy <image file>.rootfs.wic.bz2 --bmap <image file>.rootfs.wic.bmap <device>
+sudo bmaptool copy core-image-minimal.rootfs.wic.bz2 --bmap core-image-minimal.rootfs.wic.bmap <device>
 ```
 
 Referencias
