@@ -316,13 +316,13 @@ meta-cruce-inteligente<br>
 ### 7.2 Dependencias Críticas
 
 **Python:**
-- opencv-python >= 4.7.0
+- opencv-python >= 4.5
 - tensorflow-lite >= 2.13.0
-- numpy >= 1.24.0
-- RPi.GPIO >= 0.7.0
+- numpy >= 1.22.0
+
 
 **Sistema:**
-- Linux kernel >= 6.1
+- Linux kernel >= 5.15
 - USB drivers
 - V4L2 framework
 
@@ -345,7 +345,6 @@ meta-cruce-inteligente<br>
 **Fase 3: Desarrollo de Aplicación**
 - Implementación de módulo de visión
 - Desarrollo de lógica de control
-- Integración con GPIO
 
 **Fase 4: Pruebas y Validación**
 - Pruebas unitarias por módulo
@@ -360,20 +359,20 @@ meta-cruce-inteligente<br>
 
 | Fase | Actividades | Duración | Fechas |
 |------|-------------|----------|---------|
-| **Diseño** | Especificación de requerimientos, Arquitectura del sistema, Diseño detallado | 24 días | 20-sep al 14-oct |
-| **Desarrollo** | Configuración Yocto, Integración TensorFlow Lite, Desarrollo aplicación | 35 días | 25-sep al 20-oct |
-| **Pruebas** | Pruebas unitarias, Pruebas de integración, Validación final | 21 días | 30-oct al 20-nov |
-| **Documentación** | Propuesta de diseño, Documentación técnica, Preparación demostración | 15 días | 13-oct al 27-nov |
+| **Diseño** |Propuesta de diseño, Especificación de requerimientos, Arquitectura del sistema, Diseño detallado | 14 días | 30-sep al 13-oct |
+| **Desarrollo** | Configuración Yocto, Integración TensorFlow Lite, Desarrollo aplicación | 23 días | 7-oct al 30-oct |
+| **Pruebas** | Pruebas unitarias, Pruebas de integración, Validación final | 10 días | 30-oct al 10-nov |
+| **Documentación** | Documentación técnica, Preparación demostración| 30 días | 11-oct al 10-nov |
 
 ### 9.2 Hitos Principales
 
 | Hito | Fecha | Entregable |
 |------|-------|------------|
 | H1 | 13-oct-2025 | Propuesta de Diseño |
-| H2 | 27-oct-2025 | Imagen base funcional |
-| H3 | 10-nov-2025 | Aplicación integrada |
-| H4 | 24-nov-2025 | Pruebas completadas |
-| H5 | 04-dic-2025 | Demostración final |
+| H2 | 18-oct-2025 | Imagen base funcional |
+| H3 | 30-oct-2025 | Aplicación integrada |
+| H4 | 8-nov-2025 | Pruebas completadas |
+| H5 | 10-nov-2025 | Demostración final |
 
 ---
 
@@ -386,7 +385,6 @@ meta-cruce-inteligente<br>
 - **Detección Multi-objeto**: Capacidad de identificar peatones, vehículos y fauna simultáneamente
 
 ### 10.2 Consideraciones Técnicas
-- **Optimización de Modelos**: Uso de MobileNet para eficiencia computacional
 - **Gestión Térmica**: Diseño considerando disipación de calor en operación continua
 - **Robustez**: Mecanismos de recuperación ante fallos
 - **Escalabilidad**: Arquitectura que permite expansión a múltiples cruces
@@ -400,6 +398,6 @@ meta-cruce-inteligente<br>
 ### 10.4 Próximos Pasos
 - Desarrollo detallado de los módulos identificados
 - Adquisición y configuración del hardware
-- Entrenamiento y optimización de modelos de ML
+- Entrenamiento y optimización de modelos 
 - Implementación iterativa con ciclos de prueba
 
