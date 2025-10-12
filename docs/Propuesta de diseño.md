@@ -162,10 +162,11 @@ El problema central es la desconexión entre la operación del semáforo peatona
 |----|---------------|-------------|-----------|
 | RF001 | Captura de Video | Capturar video en tiempo real desde dos cámaras USB con resolución 720p | Alta |
 | RF002 | Detección de Peatones | Detectar peatones en radio de 5 metros con precisión >90% | Alta |
-| RF003 | Detección de Vehículos | Clasificar vehículos (autos, motos, bicis) con precisión >85% | Media |
-| RF004 | Control de Semáforo | Controlar semáforo peatonal mediante GPIO basado en detecciones | Alta |
+| RF003 | Detección de Vehículos | Clasificar vehículos (autos, motos, bicis) con precisión >85% | Alta |
+| RF004 | Control de Semáforo | Controlar semáforo peatonal mediante aprendizaje automatico basado en detecciones | Alta |
 | RF005 | Seguimiento de Objetos | Realizar seguimiento de peatones y vehículos entre frames | Media |
 | RF006 | Gestión de Eventos | Registrar eventos de detección y cambios de semáforo | Baja |
+| RF007 | Administración Remota | Establecer una conexion remota entre el dispocitivo y un administrador | Baja |
 
 ### 3.2 Requerimientos No Funcionales
 
