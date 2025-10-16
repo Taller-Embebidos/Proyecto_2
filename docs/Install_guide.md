@@ -1,6 +1,6 @@
 Guía de compilación Yocto para Raspberry Pi 4
 
-Entorno: RHEL 10 / Fedora 42 usando Toolbox o Podman
+Entorno: RHEL 10 / Fedora 42 usando Toolbx o Podman <br>
 1. Preparación del entorno
 
 Instalación de Toolbox en un host Fedora / RHEL 10
@@ -26,14 +26,15 @@ toolbox create --image registry.fedoraproject.org/fedora-toolbox:40 yocto
 
 Usando Podman:
 ```bash
-podman run -it --name yocto --replace -v /home/alfaquillo/tools:/tools:z registry.fedoraproject.org/fedora-toolbox:40 /bin/bash
+podman run -it --name yocto -v /home/<user>/tools:/tools:z registry.fedoraproject.org/fedora-toolbox:40 /bin/bash
 ```
 
 Notas:
 
-    En este caso se comparte la carpeta `~/tools` del host con el contenedor
+    En este caso se comparte la carpeta `~/tools` del host con el contenedor <br>
+    Cambiar <user> por el usuario del equipo host <br>
 
-    Se utiliza la imagen de Fedora 40 como contenedor con un alias `yocto`
+    Se utiliza la imagen de Fedora 40 como contenedor con un alias 'yocto'
 
 2. Ingreso al contenedor
 
@@ -49,21 +50,19 @@ podman start -ai yocto
 
 Consideraciones:
 
-    En Podman se requiere un usuario sin privilegios de root (Yocto no permite compilar como root)
+    En Podman se requiere un usuario sin privilegios de root (Yocto no permite compilar como root)<br>
 
     En Toolbox esto no es necesario, ya que las carpetas del host están expuestas y se ejecuta con el usuario del sistema
 
 Crear usuario no root en podman:
 ```bash
 useradd -m -u 1000 -s /bin/bash build
-passwd build
 ```
 El usuario se llamará build.
-¨passwd build" es opcional (para crear una contraseña del usuario)
 
 3. Instalación de dependencias
 
-Ingresar en usuario root solo para instalar los paquetes (aplica para Toolbox, en el caso de podman estamos en usuario root)
+Ingresar en usuario root solo para instalar los paquetes (aplica para Toolbox, en el caso de podman ya estamos en usuario root)
 
 ```bash
 su
@@ -109,6 +108,8 @@ cd poky
 git checkout -t origin/kirkstone -b my-kirkstone
 git pull
 ```
+Nota:
+Usando Podman, la carpeta esta en /tools, en el caso de toolbx la carpeta creada esta en /home/<user>/tools. <br>
 
 Inicializar el entorno:
 ```bash
@@ -130,8 +131,6 @@ cd ~/tools/poky/rpi-build
 bitbake-layers add-layer ../meta-raspberrypi
 ```
 
-Nota: También puede ubicarse en `~/tools/meta-raspberrypi` para uso compartido en futuras builds que utilicen una Raspberry pi.
-
 7. Configuración de compilación para Raspberry Pi 4
 
 Editar conf/local.conf:
@@ -143,35 +142,28 @@ nano conf/local.conf
 Modificar dentro de local.conf:
 ```bash
 MACHINE ??= "raspberrypi4"
-DL_DIR ?= "/home/user/tools/poky/downloads"
-SSTATE_DIR ?= "/home/user/tools/poky/sstate-cache"
+EXTRA_IMAGE_FEATURES ?= "debug-tweaks tools-sdk tools-debug"
 BB_HASHSERVE_UPSTREAM = "hashserv.yoctoproject.org:8686"
 SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
 ```
 
-Agregar al final de oe-init-build-env:
-```bash
-export DL_DIR=/home/user/tools/poky/downloads
-export SSTATE_DIR=/home/user/tools/poky/sstate-cache
-```
 
-
-Nota: Aquí puede incluir su capa de personalización "custom" si aplica.
+Nota: Aquí puede incluir su capa de personalización "custom" si aplica. Comenta la línea por defecto de 'MACHINE' para que la compilación sea de la Raspberry pi4
 
 8. Descarga de dependencias para imagen mínima (opcional), para compilar offline
 
 ```
-bitbake core-image-minimal -c fetchD
+bitbake core-image-minimal -c fetch
 
 
 ```
-9. Compilación de imagen mínima
+9. Compilación de imagen mínima 
 
 ```
 bitbake core-image-minimal
 ```
 
-10. Generación y copia de imagen
+10. Generación y copia de imagen en la SD de la Raspberrypi
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
