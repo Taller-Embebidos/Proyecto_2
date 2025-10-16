@@ -1,6 +1,6 @@
 Guía de compilación Yocto para Raspberry Pi 4
 
-Entorno: RHEL 10 / Fedora 42 usando Toolbx o Podman <br>
+Entorno: RHEL 10 / Fedora 42 usando Toolbx o Podman 
 1. Preparación del entorno
 
 Instalación de Toolbox en un host Fedora / RHEL 10
@@ -31,8 +31,8 @@ podman run -it --name yocto -v /home/<user>/tools:/tools:z registry.fedoraprojec
 
 Notas:
 
-    En este caso se comparte la carpeta `~/tools` del host con el contenedor <br>
-    Cambiar <user> por el usuario del equipo host <br>
+    En este caso se comparte la carpeta `~/tools` del host con el contenedor 
+    Cambiar <user> por el usuario del equipo host 
 
     Se utiliza la imagen de Fedora 40 como contenedor con un alias 'yocto'
 
@@ -50,7 +50,7 @@ podman start -ai yocto
 
 Consideraciones:
 
-    En Podman se requiere un usuario sin privilegios de root (Yocto no permite compilar como root)<br>
+    En Podman se requiere un usuario sin privilegios de root (Yocto no permite compilar como root)
 
     En Toolbox esto no es necesario, ya que las carpetas del host están expuestas y se ejecuta con el usuario del sistema
 
@@ -109,7 +109,7 @@ git checkout -t origin/kirkstone -b my-kirkstone
 git pull
 ```
 Nota:
-Usando Podman, la carpeta esta en /tools, en el caso de toolbx la carpeta creada esta en /home/<user>/tools. <br>
+Usando Podman, la carpeta esta en /tools, en el caso de toolbx la carpeta creada esta en /home/<user>/tools.
 
 Inicializar el entorno:
 ```bash
@@ -163,7 +163,7 @@ bitbake core-image-minimal -c fetch
 bitbake core-image-minimal
 ```
 
-10. Generación y copia de imagen en la SD de la Raspberrypi
+10. Generación y copia de imagen en la SD de la Raspberry pi4
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
