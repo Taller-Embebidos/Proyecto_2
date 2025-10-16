@@ -109,7 +109,7 @@ git checkout -t origin/kirkstone -b my-kirkstone
 git pull
 ```
 Nota:
-Usando Podman, la carpeta esta en /tools, en el caso de toolbx la carpeta creada esta en /home/<user>/tools.
+Usando Podman, la carpeta esta en /tools, en el caso de toolbx la carpeta creada esta en /home/user/tools.
 
 Inicializar el entorno:
 ```bash
