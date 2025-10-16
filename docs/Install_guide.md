@@ -161,7 +161,8 @@ Nota: Aquí puede incluir su capa de personalización "custom" si aplica.
 8. Descarga de dependencias para imagen mínima (opcional), para compilar offline
 
 ```
-bitbake core-image-minimal runall=fetch
+bitbake core-image-minimal -c fetchD
+
 
 ```
 9. Compilación de imagen mínima
