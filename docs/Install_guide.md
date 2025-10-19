@@ -172,7 +172,7 @@ cd ~/tools/poky/rpi-build/tmp/deploy/images/
 
 11. Para flashearlo en Linux
 
-Identifica tu SD conectada en el equipo Linux:
+Identifica la SD conectada en el equipo Linux:
 
 ```bash
 lsblk
@@ -183,13 +183,13 @@ Luego ejecuta:
 bzcat core-image-minimal-raspberrypi4.rootfs.wic.bz2 | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
 ```
 
-Reemplaza sdX por tu dispositivo (por ejemplo sdb).
+Reemplaza sdX por el dispositivo (por ejemplo sdb).
 Cuando termine:
 ```bash
 sudo eject /dev/sdX
 ```
 
-Qué tendrás en la SD después del flasheo
+La SD después del flasheo tendrá estas particiones:
 
     Partición: boot
     Sistema: FAT32
