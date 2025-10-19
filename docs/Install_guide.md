@@ -204,7 +204,7 @@ Listo, ya puede conectar la SD en la RaspberryPi 4 y ejecutar la imagen compilad
 Las credenciales por defecto son:
 
     User: root
-    Pass: "vacío"
+    Pass: 
 
 Referencias
 
