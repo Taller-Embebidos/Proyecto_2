@@ -139,7 +139,7 @@ cd ~/tools/poky/rpi-build/
 nano conf/local.conf
 ```
 
-Modificar dentro de local.conf:
+Modificar dentro de local.conf estas entradas, descomentalas o agregalas si no se encuentran
 ```bash
 MACHINE ??= "raspberrypi4"
 EXTRA_IMAGE_FEATURES ?= "debug-tweaks tools-sdk tools-debug"
@@ -152,23 +152,59 @@ Nota: Aquí puede incluir su capa de personalización "custom" si aplica. Coment
 
 8. Descarga de dependencias para imagen mínima (opcional), para compilar offline
 
-```
+```bash
 bitbake core-image-minimal -c fetch
 
 
 ```
 9. Compilación de imagen mínima 
 
-```
+```bash
 bitbake core-image-minimal
 ```
 
 10. Generación y copia de imagen en la SD de la Raspberry pi4
+La ruta donde va a estar la imagen compilada es la siguiente
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
-sudo bmaptool copy core-image-minimal.rootfs.wic.bz2 --bmap core-image-minimal.rootfs.wic.bmap <device>
 ```
+
+11. Para flashearlo en Linux
+
+Identifica tu SD conectada en el equipo Linux:
+
+```bash
+lsblk
+```
+Luego ejecuta:
+
+```bash
+bzcat core-image-minimal-raspberrypi4.rootfs.wic.bz2 | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
+```
+
+Reemplaza sdX por tu dispositivo (por ejemplo sdb).
+Cuando termine:
+```bash
+sudo eject /dev/sdX
+```
+
+Qué tendrás en la SD después del flasheo
+
+    Partición: boot
+    Sistema: FAT32
+    Contenido: Image, *.dtb, config.txt, firmware
+    
+    Partición: rootfs
+    Sistema: ext4/ext3
+    Contenido: rootfs completo de Yocto
+
+Listo, ya puede conectar la SD en la RaspberryPi 4 y ejecutar la imagen compilada.
+
+Las credenciales por defecto son:
+
+    User: root
+    Pass: "vacío"
 
 Referencias
 
