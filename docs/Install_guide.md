@@ -172,7 +172,7 @@ cd ~/tools/poky/rpi-build/tmp/deploy/images/
 
 11. Para flashearlo en Linux
 
-Identifica la SD conectada en el equipo Linux:
+Conecte e identifique la SD conectada en el equipo Linux:
 
 ```bash
 lsblk
