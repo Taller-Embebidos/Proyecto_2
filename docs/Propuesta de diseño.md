@@ -74,17 +74,17 @@ Los sistemas de semaforización convencionales presentan limitaciones fundamenta
 **Beneficios en Seguridad:**
 - Reducción estimada del 40-60% en accidentes peatonales [14]
 - Detección temprana de situaciones de riesgo [15]
-- Adaptación automática a condiciones variables [16]
+- Adaptación automática a condiciones variables
 
 **Eficiencia Operativa:**
-- Optimización del flujo vehicular y peatonal [17]
-- Reducción del 30% en tiempos de espera promedio [18]
-- Minimización del consumo energético [19]
+- Optimización del flujo vehicular y peatonal
+- Reducción del 30% en tiempos de espera promedio
+- Minimización del consumo energético
 
 **Sustentabilidad:**
-- Promoción de transporte activo y saludable [20]
-- Reducción de emisiones contaminantes [21]
-- Habilitación de ciudades más inteligentes y inclusivas [22]
+- Promoción de transporte activo y saludable
+- Reducción de emisiones contaminantes
+- Habilitación de ciudades más inteligentes y inclusivas
 
 ### 1.2 Revisión Bibliográfica Especializada
 
