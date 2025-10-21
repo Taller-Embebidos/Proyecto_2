@@ -21,7 +21,7 @@ import os
 # CONFIGURACIÓN GENERAL
 # ---------------------------
 # Ruta al video (modifica según tu archivo)
-VIDEO_PATH_VEHICULOS = "video_calle.mp4"   # Ejemplo: ./videos/video_calle.mp4
+VIDEO_PATH_VEHICULOS = "video_test.mp4"   # Ejemplo: ./videos/video_calle.mp4
 CAM_PEATONES_FAUNA = 0                     # Índice de la cámara integrada (generalmente 0)
 MODEL_PATH = "model.tflite"                # Modelo de detección TFLite
 LABELS_PATH = "labels.txt"                 # Etiquetas
@@ -194,71 +194,43 @@ def decide_semaforo(count_veh, count_ped, count_fauna):
 # FUNCIÓN PRINCIPAL
 # ---------------------------
 def main():
-    print("Inicializando sistema de detección en Fedora 40...")
-    # Fuente 1: Video (vehículos)
-    vehiculos_worker = VideoWorker(VIDEO_PATH_VEHICULOS, name="Vehiculos")
-    # Fuente 2: Cámara integrada
-    peatones_worker = VideoWorker(CAM_PEATONES_FAUNA, name="Peatones/Fauna")
-
-    vehiculos_worker.start()
-    peatones_worker.start()
+    print("Inicializando detección (solo video)...")
+    worker = VideoWorker(VIDEO_PATH_VEHICULOS, name="Vehiculos")
+    worker.start()
 
     try:
         while True:
-            frame_v, dets_v = vehiculos_worker.get_latest()
-            frame_p, dets_p = peatones_worker.get_latest()
+            frame, dets = worker.get_latest()
+            if frame is None:
+                time.sleep(0.05)
+                continue
 
-            # Clasificación por tipo
-            veh_count, _, _ = classify_counts(dets_v)
-            _, ped_count, fauna_count = classify_counts(dets_p)
-
-            # Actualizar historial
-            veh_hist.append(veh_count)
-            ped_hist.append(ped_count)
-            fauna_hist.append(fauna_count)
-
-            # Decisión del semáforo
+            veh_count, ped_count, fauna_count = classify_counts(dets)
             decide_semaforo(veh_count, ped_count, fauna_count)
 
-            # Mostrar estado
             sys.stdout.write(
                 f"\rVehículos:{veh_count}  Peatones:{ped_count}  Fauna:{fauna_count}  --> Semáforo:{estado_semaforo}     "
             )
             sys.stdout.flush()
 
-            # Ventanas OpenCV (puedes cerrarlas con Q)
-            if frame_v is not None:
-                fv = frame_v.copy()
-                for d in dets_v:
-                    x1,y1,x2,y2 = d['bbox']
-                    cls = labels.get(d['class_id'], str(d['class_id']))
-                    cv2.rectangle(fv, (x1,y1), (x2,y2), (0,255,0), 2)
-                    cv2.putText(fv, cls, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
-                cv2.putText(fv, f"Semaforo:{estado_semaforo}", (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
-                cv2.imshow("Video Vehículos", fv)
+            fv = frame.copy()
+            for d in dets:
+                x1, y1, x2, y2 = d["bbox"]
+                cls = labels.get(d["class_id"], str(d["class_id"]))
+                cv2.rectangle(fv, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.putText(fv, cls, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.putText(fv, f"Semaforo:{estado_semaforo}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            cv2.imshow("Video Vehículos", fv)
 
-            if frame_p is not None:
-                fp = frame_p.copy()
-                for d in dets_p:
-                    x1,y1,x2,y2 = d['bbox']
-                    cls = labels.get(d['class_id'], str(d['class_id']))
-                    cv2.rectangle(fp, (x1,y1), (x2,y2), (255,0,0), 2)
-                    cv2.putText(fp, cls, (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,0,0), 2)
-                cv2.putText(fp, f"Semaforo:{estado_semaforo}", (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
-                cv2.imshow("Cámara Peatones/Fauna", fp)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
             time.sleep(0.01)
 
     except KeyboardInterrupt:
         print("\nFinalizando...")
     finally:
-        vehiculos_worker.stop()
-        peatones_worker.stop()
-        vehiculos_worker.join()
-        peatones_worker.join()
+        worker.stop()
+        worker.join()
         cv2.destroyAllWindows()
-
 if __name__ == "__main__":
     main()
