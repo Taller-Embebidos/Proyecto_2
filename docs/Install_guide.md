@@ -133,7 +133,7 @@ Modificar dentro de local.conf estas entradas, descomentalas o agregalas si no s
 MACHINE ??= "raspberrypi4"
 EXTRA_IMAGE_FEATURES ?= "debug-tweaks tools-sdk tools-debug"
 ```
-Opciones de mirroring y hashserv(opcional):
+Opciones de mirroring y hashserv (opcional):
 ```bash
 BB_HASHSERVE_UPSTREAM = "hashserv.yoctoproject.org:8686"
 SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
