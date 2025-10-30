@@ -1,6 +1,7 @@
 Guía de compilación Yocto para Raspberry Pi 4
 
 Entorno: RHEL 10 / Fedora 42 usando Toolbx o Podman 
+
 1. Preparación del entorno
 
 Instalación de Toolbox en un host Fedora / RHEL 10
@@ -17,7 +18,7 @@ Crear el directorio de trabajo:
 ```bash
 mkdir ~/tools
 ```
-Creación del contenedor
+2. Creación del contenedor
 
 Usando Toolbox (recomendado):
 ```bash
@@ -31,12 +32,12 @@ podman run -it --name yocto -v /home/<user>/tools:/tools:z registry.fedoraprojec
 
 Notas:
 
-    En este caso se comparte la carpeta `~/tools` del host con el contenedor 
-    Cambiar <user> por el usuario del equipo host 
+    Reemplazar <user> por tu usuario.
+    Dentro del contenedor, Toolbox mantiene rutas del host (~/tools), Podman las monta en /tools.
 
     Se utiliza la imagen de Fedora 40 como contenedor con un alias 'yocto'
 
-2. Ingreso al contenedor
+3. Ingreso al contenedor
 
 Usando Toolbox:
 ```bash
@@ -46,6 +47,7 @@ toolbox enter yocto
 Usando Podman:
 ```bash
 podman start -ai yocto
+su - build
 ```
 
 Consideraciones:
@@ -54,21 +56,15 @@ Consideraciones:
 
     En Toolbox esto no es necesario, ya que las carpetas del host están expuestas y se ejecuta con el usuario del sistema
 
-Crear usuario no root en podman:
+Crear usuario no root en Podman:
 ```bash
 useradd -m -u 1000 -s /bin/bash build
 ```
 El usuario se llamará build.
 
-3. Instalación de dependencias
-
-Ingresar en usuario root solo para instalar los paquetes (aplica para Toolbox, en el caso de podman ya estamos en usuario root)
-
-```bash
-su
-```
-
-Instalar los paquetes requeridos para la compilación:
+4. Instalación de dependencias
+   
+Como root (Toolbox o Podman:
 ```bash
 dnf install -y @development-tools bzip2 ccache chrpath cpio cpp diffstat diffutils file findutils gawk gcc gcc-c++ git glibc-devel glibc-langpack-en gzip hostname lz4 make patch perl perl-Data-Dumper perl-File-Compare perl-File-Copy perl-FindBin perl-Text-ParseWords perl-Thread-Queue perl-bignum perl-locale python python3 python3-devel python3-GitPython python3-jinja2 python3-pexpect python3-pip python3-setuptools rpcgen socat tar texinfo unzip wget which xz zstd SDL-devel xterm mesa-libGL-devel nano sudo
 ```
@@ -81,22 +77,17 @@ echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 ```
-Finalmente ya puede salir de superusuario
+Finalmente ya puede salir de root:
 
 ```bash
 exit
 ```
 Y volverá a usuario normal
 
-En podman, requerimos entrar en modo usuario para compilar
+En podman, requerimos entrar en modo usuario build:
 
 ```bash
 su - build
-```
-
-Salir y volver a root:
-```bash
-exit
 ```
 
 5. Preparación del entorno Yocto
@@ -105,13 +96,11 @@ exit
 cd ~/tools
 git clone git://git.yoctoproject.org/poky
 cd poky
-git checkout -t origin/kirkstone -b my-kirkstone
+git checkout -t origin/kirkstone -b kirkstone
 git pull
 ```
-Nota:
-Usando Podman, la carpeta esta en /tools, en el caso de toolbx la carpeta creada esta en /home/user/tools.
 
-Inicializar el entorno:
+Inicializar el build:
 ```bash
 source oe-init-build-env rpi-build
 ```
@@ -121,7 +110,7 @@ source oe-init-build-env rpi-build
 cd ~/tools/poky
 git clone https://git.yoctoproject.org/meta-raspberrypi
 cd meta-raspberrypi/
-git checkout -t origin/kirkstone -b my-kirkstone
+git checkout -t origin/kirkstone -b kirkstone
 git pull
 ```
 
@@ -143,6 +132,9 @@ Modificar dentro de local.conf estas entradas, descomentalas o agregalas si no s
 ```bash
 MACHINE ??= "raspberrypi4"
 EXTRA_IMAGE_FEATURES ?= "debug-tweaks tools-sdk tools-debug"
+```
+Opciones de mirroring y hashserv(opcional):
+```bash
 BB_HASHSERVE_UPSTREAM = "hashserv.yoctoproject.org:8686"
 SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
 ```
@@ -204,7 +196,7 @@ Listo, ya puede conectar la SD en la RaspberryPi 4 y ejecutar la imagen compilad
 Las credenciales por defecto son:
 
     User: root
-    Pass: 
+    Pass: (vacío)
 
 Referencias
 
@@ -215,3 +207,5 @@ Referencias
 [Site] https://docs.yoctoproject.org/brief-yoctoprojectqs/
 
 [Site] https://github.com/agherzan/meta-raspberrypi
+
+[Site] https://velog.io/@mythos/Yocto-Linux-Quick-Build-for-Raspberry-Pi-3B-Fedora-35
