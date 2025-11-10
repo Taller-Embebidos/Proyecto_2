@@ -180,10 +180,12 @@ lsblk
 Luego ejecuta:
 
 ```bash
-bzcat core-image-minimal-raspberrypi4.rootfs.wic.bz2 | sudo dd of=/dev/sdX bs=4M status=progress conv=fsync
+sudo bmaptool copy <image file>.rootfs.wic.bz2 --bmap <image file>.rootfs.wic.bmap /dev/sdX
 ```
 
-Reemplaza sdX por el dispositivo (por ejemplo sdb).
+Reemplaza sdX por el dispositivo (por ejemplo sda).
+<image file> reemplazar por el nombre real del archivo. (por ejemplo core-image-minimal)
+
 Cuando termine:
 ```bash
 sudo eject /dev/sdX
