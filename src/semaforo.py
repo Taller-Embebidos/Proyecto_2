@@ -16,7 +16,7 @@ def load_tflite():
     if is_raspberry_pi:
         try:
             from tflite_runtime.interpreter import Interpreter
-            return Interpreter
+            return Interpreter 
         except ImportError:
             import tensorflow as tf
             return tf.lite.Interpreter
