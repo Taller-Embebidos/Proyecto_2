@@ -113,14 +113,25 @@ cd meta-raspberrypi/
 git checkout -t origin/kirkstone -b kirkstone
 git pull
 ```
+7. Agregar capa de Tensorflow-lite
+
+```bash
+cd ~/tools/poky
+git clone https://git.yoctoproject.org/meta-tensorflow
+cd meta-tensorflow/
+git checkout -t origin/kirkstone -b kirkstone
+git pull
+```
+
 
 Registrar la capa en bblayers.conf:
 ```bash
 cd ~/tools/poky/rpi-build
 bitbake-layers add-layer ../meta-raspberrypi
+bitbake-layers add-layer ../meta-tensorflow
 ```
 
-7. Configuración de compilación para Raspberry Pi 4
+8. Configuración de compilación para Raspberry Pi 4
 
 Editar conf/local.conf:
 ```bash
@@ -142,27 +153,27 @@ SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfil
 
 Nota: Aquí puede incluir su capa de personalización "custom" si aplica. Comenta la línea por defecto de 'MACHINE' para que la compilación sea de la Raspberry pi4
 
-8. Descarga de dependencias para imagen mínima (opcional), para compilar offline
+9. Descarga de dependencias para imagen mínima (opcional), para compilar offline
 
 ```bash
 bitbake core-image-minimal -c fetch
 
 
 ```
-9. Compilación de imagen mínima 
+10. Compilación de imagen mínima 
 
 ```bash
 bitbake core-image-minimal
 ```
 
-10. Generación y copia de imagen en la SD de la Raspberry pi4
+11. Generación y copia de imagen en la SD de la Raspberry pi4
 La ruta donde va a estar la imagen compilada es la siguiente
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
 ```
 
-11. Para flashearlo en Linux
+12. Para flashearlo en Linux
 
 Conecte e identifique la SD conectada en el equipo Linux:
 
