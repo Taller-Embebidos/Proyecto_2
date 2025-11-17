@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-import time  # Para medir FPS de inferencia
+import time  # Para medir FPS de inferencia y control de tiempos
 
 # ===========================
 # Configuración automática para PC vs RPi
@@ -17,14 +17,13 @@ if is_raspberry_pi:
 
 
 def load_tflite():
-    if is_raspberry_pi:
-        try:
-            from tflite_runtime.interpreter import Interpreter
-            return Interpreter
-        except ImportError:
-            import tensorflow as tf
-            return tf.lite.Interpreter
-    else:
+    """
+    Intenta usar tflite-runtime y si no existe, cae a TensorFlow.
+    """
+    try:
+        from tflite_runtime.interpreter import Interpreter
+        return Interpreter
+    except ImportError:
         import tensorflow as tf
         return tf.lite.Interpreter
 
@@ -56,7 +55,7 @@ nms_threshold = 0.4
 # Parámetros generales
 # ===========================
 # Simulación Raspberry Pi
-SIMULATE_RASPBERRY = False
+SIMULATE_RASPBERRY = True
 RASPI_PROCESS_EVERY_N_FRAMES = 2  # procesar 1 de cada N frames
 
 # Zona de cruce (ROI) en el frame de 640x360
@@ -65,16 +64,26 @@ CROSS_Y1 = 230     # parte superior de la zona
 CROSS_X2 = 640     # derecha
 CROSS_Y2 = 360     # parte inferior de la zona
 
-# Clases que nos interesan mostrar
+# Clases
 ALLOWED_CLASSES = [
     "person", "car", "bus", "truck",
     "motorcycle", "bicycle", "cat", "dog"
 ]
 
+VEHICLE_CLASSES = ["car", "bus", "truck", "motorcycle", "bicycle"]
+ANIMAL_CLASSES = ["cat", "dog"]
 
 # ===========================
-# Funciones auxiliares
+# Lógica del semáforo
 # ===========================
+# Estados posibles: "GREEN", "RED"
+semaphore_state = "RED"
+semaphore_state_since = time.time()  # cuándo cambió por última vez
+
+MIN_RED_TIME = 20.0   # segundos mínimo en rojo
+MIN_GREEN_TIME = 30.0 # segundos mínimo en verde antes de poder volver a rojo
+
+
 def is_in_crossing_zone(bbox):
     """
     Determina si el centro del bounding box está dentro de la zona de cruce.
@@ -104,7 +113,7 @@ def preprocess(frame):
     # Centrar la imagen en el canvas
     y_offset = (img_height - new_h) // 2
     x_offset = (img_width - new_w) // 2
-    input_img[y_offset:y_offset + new_h, x_offset:x_offset + new_w] = resized
+    input_img[y_offset:y_offset + new_h, x_offset + 0:x_offset + new_w] = resized
 
     # Preprocesamiento para el modelo
     input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2RGB)
@@ -116,7 +125,7 @@ def preprocess(frame):
 
 def get_color_by_class(class_name):
     """Asigna colores según la clase del objeto"""
-    vehicle_classes = ["car", "bus", "truck", "motorcycle", "bicycle"]
+    vehicle_classes = VEHICLE_CLASSES
     large_transport = ["train", "airplane", "boat"]
 
     if class_name == "person":
@@ -279,7 +288,7 @@ cap = cv2.VideoCapture("video_test.mp4")
 
 frame_count = 0          # todos los frames leídos del video
 processed_frames = 0     # frames en los que realmente se hizo inferencia
-start_time = time.time() # para calcular FPS de inferencia
+start_time = time.time() # para calcular FPS de inferencia global
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -287,6 +296,8 @@ while cap.isOpened():
         break
 
     frame_count += 1
+    now = time.time()
+    
 
     # Simulación Raspberry Pi: procesar solo 1 de cada N frames
     if SIMULATE_RASPBERRY and (frame_count % RASPI_PROCESS_EVERY_N_FRAMES != 0):
@@ -344,8 +355,9 @@ while cap.isOpened():
     )
 
     crossing_people_count = 0
+    has_vehicle = False
 
-    # ---- Dibujar detecciones ----
+    # ---- Dibujar detecciones + marcar personas en zona de cruce ----
     for bbox, score, class_id in detections:
         if class_id < len(labels):
             class_name = labels[class_id]
@@ -357,12 +369,14 @@ while cap.isOpened():
 
         x1, y1, x2, y2 = bbox
         label_text = f"{class_name}:{score:.2f}"
-
-        # Por defecto, color según clase
         color = get_color_by_class(class_name)
 
-        # Si es persona, verificamos si está en la zona de cruce
-        if class_name == "person" and is_in_crossing_zone(bbox):
+        # ¿Es vehículo?
+        if class_name in VEHICLE_CLASSES:
+            has_vehicle = True
+
+        # Personas o animales en zona de cruce
+        if (class_name == "person" or class_name in ANIMAL_CLASSES) and is_in_crossing_zone(bbox):
             crossing_people_count += 1
             color = (0, 0, 255)  # rojo
             label_text = f"{class_name}:CRUCE"
@@ -385,8 +399,50 @@ while cap.isOpened():
             1,
         )
 
+    # ===========================
+    # LÓGICA DEL SEMÁFORO
+    # ===========================
+    has_ped_or_animal = crossing_people_count > 0
+    time_in_state = now - semaphore_state_since
+
+    if semaphore_state == "GREEN":
+        # Regla: si hay personas/animales y
+        #  - ya pasó el tiempo mínimo en verde (30s), o
+        #  - no hay vehículos,
+        # entonces podemos cambiar a rojo.
+        if has_ped_or_animal and (time_in_state >= MIN_GREEN_TIME or not has_vehicle):
+            semaphore_state = "RED"
+            semaphore_state_since = now
+
+    elif semaphore_state == "RED":
+        # Debe permanecer en rojo mínimo 20s
+        if time_in_state >= MIN_RED_TIME:
+            # Si ya cumplió su tiempo de rojo, pasa a verde
+            semaphore_state = "GREEN"
+            semaphore_state_since = now
+
+    # ===========================
+    # DIBUJAR ESTADO DEL SEMÁFORO
+    # ===========================
+    sem_color = (0, 255, 0) if semaphore_state == "GREEN" else (0, 0, 255)
+    sem_text = f"Semaforo: {semaphore_state}"
+
+    # Círculo tipo luz de semáforo
+    cv2.circle(frame_display, (600, 60), 15, sem_color, -1)
+
+    # Texto de estado
+    cv2.putText(
+        frame_display,
+        sem_text,
+        (430, 65),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.6,
+        sem_color,
+        2,
+    )
+
     # Mostrar cuántas personas hay en la zona de cruce
-    status_text = f"Personas en zona de cruce: {crossing_people_count}"
+    status_text = f"Personas/animales en cruce: {crossing_people_count}"
     cv2.putText(
         frame_display,
         status_text,
