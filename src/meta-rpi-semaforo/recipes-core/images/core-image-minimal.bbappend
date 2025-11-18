@@ -9,7 +9,7 @@ IMAGE_INSTALL:append = " \
     semaforo-inteligente \
     python3-opencv \
     python3-numpy \
-    tensorflow-lite \
+    tflite-runtime \
     v4l-utils \
     gstreamer1.0 \
     gstreamer1.0-plugins-base \

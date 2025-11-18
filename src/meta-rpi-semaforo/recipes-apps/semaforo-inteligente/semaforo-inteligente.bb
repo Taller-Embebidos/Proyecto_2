@@ -8,7 +8,7 @@ S = "${WORKDIR}/git"
 RDEPENDS:${PN} = " \
     python3-opencv \
     python3-numpy \
-    tensorflow-lite \
+    tflite-runtime \
 "
 
 do_install() {
