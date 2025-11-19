@@ -181,6 +181,9 @@ Conecte e identifique la SD conectada en el equipo Linux:
 lsblk
 ```
 Luego ejecuta:
+```bash
+sudo eject /dev/sdX
+```
 
 ```bash
 sudo bmaptool copy <image file>.rootfs.wic.bz2 --bmap <image file>.rootfs.wic.bmap /dev/sdX
