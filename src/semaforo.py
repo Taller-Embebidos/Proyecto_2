@@ -1,3 +1,4 @@
+
 import cv2
 import numpy as np
 import os
@@ -6,8 +7,7 @@ import time  # Para medir FPS de inferencia y control de tiempos
 # ===========================
 # Configuración automática para PC vs RPi
 # ===========================
-is_raspberry_pi = os.path.exists("/proc/device-tree/model")
-
+is_raspberry_pi = True
 if is_raspberry_pi:
     # Solo optimización de threads para RPi4
     os.environ["OMP_NUM_THREADS"] = "4"
@@ -16,22 +16,22 @@ if is_raspberry_pi:
     cv2.setNumThreads(2)
 
 
-def load_tflite():
-    """
-    Intenta usar tflite-runtime y si no existe, cae a TensorFlow.
-    """
-    try:
-        from tflite_runtime.interpreter import Interpreter
-        return Interpreter
-    except ImportError:
-        import tensorflow as tf
-        return tf.lite.Interpreter
+#def load_tflite():
+#    """
+#    Intenta usar tflite-runtime y si no existe, cae a TensorFlow.
+#  """
+#    try:
+#        from tflite_runtime.interpreter import Interpreter
+#        return Interpreter
+#    except ImportError:
+#        import tensorflow as tf
+#        return tf.lite.Interpreter
 
-
+from tflite_runtime.interpreter import Interpreter
 # ===========================
 # Carga de modelo y labels
 # ===========================
-TFLiteInterpreter = load_tflite()
+TFLiteInterpreter = Interpreter
 
 # Load TFLite model (mismo modelo para ambas plataformas)
 interpreter = TFLiteInterpreter(model_path="yolo11n_float16.tflite")
