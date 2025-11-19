@@ -182,7 +182,7 @@ lsblk
 ```
 Luego ejecuta:
 ```bash
-sudo eject /dev/sdX
+sudo umount /dev/sdx
 ```
 
 ```bash
