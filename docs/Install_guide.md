@@ -122,12 +122,22 @@ cd meta-tensorflow/
 git checkout -t origin/kirkstone -b kirkstone
 git pull
 ```
+8. Agregar capa de Openembedded
 
+```bash
+cd ~/tools/poky
+git clone https://github.com/openembedded/meta-openembedded.git
+cd meta-openembedded/
+git checkout -t origin/kirkstone -b kirkstone
+git pull
+```
 
 Registrar la capa en bblayers.conf:
 ```bash
 cd ~/tools/poky/rpi-build
 bitbake-layers add-layer ../meta-raspberrypi
+bitbake-layers add-layer ../meta-openembedded/meta-oe
+bitbake-layers add-layer ../meta-openembedded/meta-python
 bitbake-layers add-layer ../meta-tensorflow
 ```
 
