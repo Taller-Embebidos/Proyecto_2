@@ -208,7 +208,7 @@ def postprocess(outputs, orig_dims, conf_threshold=0.3, nms_threshold=0.4):
 # ===========================
 # Loop principal
 # ===========================
-cap = cv2.VideoCapture("video_test.mp4")
+cap = cv2.VideoCapture("video_test1.mp4")
 
 frame_count = 0
 processed_frames = 0
