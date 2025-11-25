@@ -71,7 +71,7 @@ if environment == "rpi4":
     
 elif environment == "qemu":
     # QEMU es EXTREMADAMENTE lento - ajustes MUY agresivos
-    print("⚠️  QEMU detectado - aplicando OPTIMIZACIONES EXTREMAS para emulación")
+    print(" QEMU detectado - aplicando OPTIMIZACIONES EXTREMAS para emulación")
     PROCESS_EVERY_N_FRAMES = 10  # Procesar solo 1 de cada 10 frames
     WINDOW_NAME = "Semaforo Inteligente (QEMU - MUY LENTO)"
     CONF_THRESHOLD = 0.7  # Umbral MUY alto para MUY pocas detecciones
