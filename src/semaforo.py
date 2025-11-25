@@ -1,22 +1,54 @@
 import cv2
 import numpy as np
 import os
-import time  # Para medir FPS de inferencia y control de tiempos
+import time
+import sys
 
 # ===========================
-# Configuración automática para PC vs RPi
+# Configuración automática para PC vs RPi vs QEMU
 # ===========================
-is_raspberry_pi = os.uname().machine.startswith(("arm", "aarch"))
+def detect_environment():
+    """Detecta automáticamente el entorno de ejecución"""
+    machine = os.uname().machine
+    
+    # Verificar si estamos en QEMU
+    is_qemu = os.path.exists("/etc/qemu-banner") or "qemu" in machine.lower()
+    
+    if is_qemu:
+        return "qemu"
+    elif machine.startswith(("arm", "aarch")):
+        return "rpi4"
+    else:
+        return "pc"
 
-if is_raspberry_pi:
-    # Solo optimización de threads para RPi4
+# Detectar entorno
+environment = detect_environment()
+print(f"Entorno detectado: {environment}")
+
+# Configuraciones específicas por entorno
+if environment == "rpi4":
+    # Optimización para RPi4
     os.environ["OMP_NUM_THREADS"] = "4"
     os.environ["TF_NUM_INTEROP_THREADS"] = "2"
     os.environ["TF_NUM_INTRAOP_THREADS"] = "2"
     cv2.setNumThreads(2)
+    PROCESS_EVERY_N_FRAMES = 2
+    WINDOW_NAME = "Semaforo Inteligente (RPi4)"
+    
+elif environment == "qemu":
+    # QEMU es más lento, procesar menos frames
+    PROCESS_EVERY_N_FRAMES = 3
+    WINDOW_NAME = "Semaforo Inteligente (QEMU)"
+    # Forzar display si está disponible
+    if 'DISPLAY' not in os.environ:
+        os.environ['DISPLAY'] = ':0'
+        
+else:  # PC
+    PROCESS_EVERY_N_FRAMES = 1
+    WINDOW_NAME = "Semaforo Inteligente"
 
 # ==========================================
-#  TUS LÍNEAS ORIGINALES (RESTABLECIDAS)
+#  TUS LÍNEAS ORIGINALES (PRÁCTICAMENTE IGUAL)
 # ==========================================
 def load_tflite():
     """
@@ -30,7 +62,7 @@ def load_tflite():
         return tf.lite.Interpreter
 
 # ==========================================
-#  IMPORT DEL INTERPRETER (como estaba antes)
+#  IMPORT DEL INTERPRETER
 # ==========================================
 TFLiteInterpreter = load_tflite()
 interpreter = TFLiteInterpreter(model_path="yolo11n_float16.tflite")
@@ -47,10 +79,9 @@ conf_threshold = 0.3
 nms_threshold = 0.4
 
 # ===========================
-# Parámetros generales
+# Parámetros generales (AJUSTADOS)
 # ===========================
-SIMULATE_RASPBERRY = False
-RASPI_PROCESS_EVERY_N_FRAMES = 2
+# SIMULATE_RASPBERRY ya no es necesario - usamos PROCESS_EVERY_N_FRAMES por entorno
 
 CROSS_X1 = 0
 CROSS_Y1 = 230
@@ -71,16 +102,14 @@ semaphore_state_since = time.time()
 MIN_RED_TIME = 20.0
 MIN_GREEN_TIME = 30.0
 
-
 # ===========================
-# FUNCIONES
+# FUNCIONES (IGUALES)
 # ===========================
 def is_in_crossing_zone(bbox):
     x1, y1, x2, y2 = bbox
     cx = (x1 + x2) / 2.0
     cy = (y1 + y2) / 2.0
     return (CROSS_X1 <= cx <= CROSS_X2) and (CROSS_Y1 <= cy <= CROSS_Y2)
-
 
 def preprocess(frame):
     frame_resized = cv2.resize(frame, (640, 360))
@@ -101,19 +130,19 @@ def preprocess(frame):
 
     return input_data, (x_offset, y_offset, scale, frame_resized.shape)
 
-
 def get_color_by_class(class_name):
     if class_name == "person":
-        return (0, 0, 255)
+        return (0, 0, 255)  # Rojo
     elif class_name in VEHICLE_CLASSES:
-        return (255, 0, 0)
+        return (255, 0, 0)  # Azul
+    elif class_name in ANIMAL_CLASSES:
+        return (0, 165, 255)  # Naranja
     elif class_name in ["train", "airplane", "boat"]:
-        return (0, 255, 255)
+        return (0, 255, 255)  # Amarillo
     elif class_name in ["traffic light", "stop sign", "parking meter"]:
-        return (255, 255, 0)
+        return (255, 255, 0)  # Cian
     else:
-        return (0, 255, 0)
-
+        return (0, 255, 0)  # Verde
 
 def overlap_correction(detections, labels):
     if len(detections) <= 1:
@@ -149,7 +178,6 @@ def overlap_correction(detections, labels):
             filtered.append((bbox1, score1, class_id1))
 
     return filtered
-
 
 def postprocess(outputs, orig_dims, conf_threshold=0.3, nms_threshold=0.4):
     x_offset, y_offset, scale, (orig_h, orig_w, _) = orig_dims
@@ -204,105 +232,181 @@ def postprocess(outputs, orig_dims, conf_threshold=0.3, nms_threshold=0.4):
 
     return result
 
-
 # ===========================
-# Loop principal
+# Loop principal (ACTUALIZADO CON DETECCIONES VISUALES)
 # ===========================
-cap = cv2.VideoCapture("video_test.mp4")
+def main():
+    global semaforo_vehicular, semaforo_peatonal, semaphore_state_since
+    
+    cap = cv2.VideoCapture("video_test.mp4")
+    
+    if not cap.isOpened():
+        print("ERROR: No se puede abrir el video 'video_test.mp4'")
+        print("Verifica que el archivo existe en el directorio actual")
+        return 1
 
-frame_count = 0
-processed_frames = 0
-start_time = time.time()
+    frame_count = 0
+    processed_frames = 0
+    start_time = time.time()
+    
+    print(f"Iniciando procesamiento en modo: {environment}")
+    print(f"Procesando 1 de cada {PROCESS_EVERY_N_FRAMES} frames")
 
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    frame_count += 1
-    now = time.time()
-
-    if SIMULATE_RASPBERRY and (frame_count % RASPI_PROCESS_EVERY_N_FRAMES != 0):
-        frame_display = cv2.resize(frame, (640, 360))
-        cv2.putText(frame_display, "[SIM RPi] Frame saltado (sin inferencia)", (10, 25),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-        cv2.imshow("YOLO TFLite", frame_display)
-        if cv2.waitKey(1) & 0xFF == ord("q"):
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            print("Fin del video alcanzado")
             break
-        continue
 
-    frame_display = cv2.resize(frame, (640, 360))
-    orig_h, orig_w = frame_display.shape[:2]
+        frame_count += 1
+        now = time.time()
 
-    input_data, transform_dims = preprocess(frame)
-    interpreter.set_tensor(input_details[0]["index"], input_data)
-    interpreter.invoke()
+        # Saltar frames según el entorno
+        if frame_count % PROCESS_EVERY_N_FRAMES != 0:
+            frame_display = cv2.resize(frame, (640, 360))
+            cv2.putText(frame_display, f"[{environment.upper()}] Frame saltado", (10, 25),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+            cv2.putText(frame_display, f"Entorno: {environment}", (10, 50),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
+            
+            try:
+                cv2.imshow(WINDOW_NAME, frame_display)
+                if cv2.waitKey(1) & 0xFF == ord("q"):
+                    break
+            except Exception as e:
+                print(f"Error mostrando ventana: {e}")
+                # Continuar sin mostrar ventana
+                
+            continue
 
-    processed_frames += 1
-    elapsed = time.time() - start_time
-    fps_inference = processed_frames / elapsed if elapsed > 0 else 0.0
+        # Procesamiento completo del frame
+        frame_display = cv2.resize(frame, (640, 360))
+        orig_h, orig_w = frame_display.shape[:2]
 
-    outputs = [interpreter.get_tensor(output_details[i]["index"]) for i in range(len(output_details))]
-    detections = overlap_correction(postprocess(outputs, transform_dims, conf_threshold, nms_threshold), labels)
+        input_data, transform_dims = preprocess(frame)
+        interpreter.set_tensor(input_details[0]["index"], input_data)
+        interpreter.invoke()
 
-    cv2.rectangle(frame_display, (CROSS_X1, CROSS_Y1), (CROSS_X2, CROSS_Y2), (0, 255, 255), 2)
+        processed_frames += 1
+        elapsed = time.time() - start_time
+        fps_inference = processed_frames / elapsed if elapsed > 0 else 0.0
 
-    crossing_people_count = 0
-    has_vehicle = False
+        outputs = [interpreter.get_tensor(output_details[i]["index"]) for i in range(len(output_details))]
+        detections = overlap_correction(postprocess(outputs, transform_dims, conf_threshold, nms_threshold), labels)
 
-    for bbox, score, class_id in detections:
-        class_name = labels[class_id]
+        # ===========================
+        # DIBUJAR ZONA DE CRUCE
+        # ===========================
+        cv2.rectangle(frame_display, (CROSS_X1, CROSS_Y1), (CROSS_X2, CROSS_Y2), (0, 255, 255), 2)
+        cv2.putText(frame_display, "ZONA DE CRUCE", (CROSS_X1 + 10, CROSS_Y1 - 10),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
-        if class_name in VEHICLE_CLASSES:
-            has_vehicle = True
+        crossing_people_count = 0
+        has_vehicle = False
+        total_detections = 0
 
-        if class_name == "person" and is_in_crossing_zone(bbox):
-            crossing_people_count += 1
+        # ===========================
+        # DIBUJAR DETECCIONES YOLO
+        # ===========================
+        for bbox, score, class_id in detections:
+            if class_id >= len(labels):
+                continue
+                
+            class_name = labels[class_id]
+            total_detections += 1
+            
+            # Solo procesar clases permitidas
+            if class_name not in ALLOWED_CLASSES:
+                continue
 
-    # ===========================
-    # LÓGICA DEL SEMÁFORO
-    # ===========================
-    has_ped_or_animal = crossing_people_count > 0
-    time_in_state = now - semaphore_state_since
+            x1, y1, x2, y2 = [int(coord) for coord in bbox]
+            
+            # Color según la clase
+            color = get_color_by_class(class_name)
+            
+            # Dibujar bounding box
+            cv2.rectangle(frame_display, (x1, y1), (x2, y2), color, 2)
+            
+            # Etiqueta con clase y confianza
+            label = f"{class_name}: {score:.2f}"
+            label_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)[0]
+            
+            # Fondo para la etiqueta
+            cv2.rectangle(frame_display, (x1, y1 - label_size[1] - 5), 
+                         (x1 + label_size[0], y1), color, -1)
+            # Texto de la etiqueta
+            cv2.putText(frame_display, label, (x1, y1 - 5),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-    if semaforo_vehicular == "GREEN":
-        if has_ped_or_animal and (time_in_state >= MIN_GREEN_TIME or not has_vehicle):
-            semaforo_vehicular = "RED"
-            semaphore_state_since = now
+            # Lógica para semáforos
+            if class_name in VEHICLE_CLASSES:
+                has_vehicle = True
 
-    elif semaforo_vehicular == "RED":
-        if time_in_state >= MIN_RED_TIME:
-            semaforo_vehicular = "GREEN"
-            semaphore_state_since = now
+            if class_name == "person" and is_in_crossing_zone(bbox):
+                crossing_people_count += 1
+                # Resaltar personas en zona de cruce
+                cv2.rectangle(frame_display, (x1, y1), (x2, y2), (0, 0, 255), 3)
+                cv2.putText(frame_display, "EN CRUCE!", (x1, y1 - 20),
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-    # Semáforo peatonal inverso
-    semaforo_peatonal = "RED" if semaforo_vehicular == "GREEN" else "GREEN"
+        # ===========================
+        # LÓGICA DEL SEMÁFORO
+        # ===========================
+        has_ped_or_animal = crossing_people_count > 0
+        time_in_state = now - semaphore_state_since
 
-    # ===========================
-    # VISUALIZACIÓN
-    # ===========================
-    # Vehicular (derecha)
-    color_v = (0, 255, 0) if semaforo_vehicular == "GREEN" else (0, 0, 255)
-    cv2.circle(frame_display, (600, 60), 15, color_v, -1)
-    cv2.putText(frame_display, f"Semaforo Vehicular: {semaforo_vehicular}", (350, 65),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_v, 2)
+        if semaforo_vehicular == "GREEN":
+            if has_ped_or_animal and (time_in_state >= MIN_GREEN_TIME or not has_vehicle):
+                semaforo_vehicular = "RED"
+                semaphore_state_since = now
 
-    # Peatonal (izquierda)
-    color_p = (0, 255, 0) if semaforo_peatonal == "GREEN" else (0, 0, 255)
-    cv2.circle(frame_display, (40, 60), 15, color_p, -1)
-    cv2.putText(frame_display, f"Semaforo Peatonal: {semaforo_peatonal}", (10, 95),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_p, 2)
+        elif semaforo_vehicular == "RED":
+            if time_in_state >= MIN_RED_TIME:
+                semaforo_vehicular = "GREEN"
+                semaphore_state_since = now
 
-    # Información adicional
-    cv2.putText(frame_display, f"Personas/animales en cruce: {crossing_people_count}",
-                (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        # Semáforo peatonal inverso
+        semaforo_peatonal = "RED" if semaforo_vehicular == "GREEN" else "GREEN"
 
-    cv2.putText(frame_display, f"FPS inferencia: {fps_inference:.1f}",
-                (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        # ===========================
+        # VISUALIZACIÓN
+        # ===========================
+        # Vehicular (derecha)
+        color_v = (0, 255, 0) if semaforo_vehicular == "GREEN" else (0, 0, 255)
+        cv2.circle(frame_display, (600, 60), 15, color_v, -1)
+        cv2.putText(frame_display, f"Semaforo Vehicular: {semaforo_vehicular}", (350, 65),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_v, 2)
 
-    cv2.imshow("YOLO TFLite", frame_display)
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
+        # Peatonal (izquierda)
+        color_p = (0, 255, 0) if semaforo_peatonal == "GREEN" else (0, 0, 255)
+        cv2.circle(frame_display, (40, 60), 15, color_p, -1)
+        cv2.putText(frame_display, f"Semaforo Peatonal: {semaforo_peatonal}", (10, 95),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_p, 2)
 
-cap.release()
-cv2.destroyAllWindows()
+        # Información adicional
+        cv2.putText(frame_display, f"Entorno: {environment}", (10, 25), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+        cv2.putText(frame_display, f"Detecciones: {total_detections}", (10, 50), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+        cv2.putText(frame_display, f"Personas en cruce: {crossing_people_count}",
+                    (10, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        cv2.putText(frame_display, f"FPS inferencia: {fps_inference:.1f}",
+                    (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+
+        # Mostrar ventana con manejo de errores
+        try:
+            cv2.imshow(WINDOW_NAME, frame_display)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+        except Exception as e:
+            print(f"Error mostrando ventana: {e}")
+            # Continuar procesando sin interfaz gráfica
+            print(f"Procesando en modo headless - Frame {frame_count}, Detecciones: {total_detections}")
+
+    cap.release()
+    cv2.destroyAllWindows()
+    print(f"Procesamiento completado. Total frames: {frame_count}, Frames procesados: {processed_frames}")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
