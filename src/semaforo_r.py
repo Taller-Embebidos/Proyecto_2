@@ -5,44 +5,14 @@ import time
 import sys
 
 # ===========================
-# Configuración automática para PC vs RPi vs QEMU - CORREGIDA
+# Configuración automática para PC vs RPi vs QEMU
 # ===========================
 def detect_environment():
-    """Detecta automáticamente el entorno de ejecución - VERSIÓN CORREGIDA"""
-    
-    # PRIMERO: Usar la variable del wrapper (más confiable)
-    wrapper_env = os.environ.get('SEMAFORO_ENVIRONMENT', '').lower()
-    if wrapper_env in ['qemu', 'rpi4']:
-        print(f"✓ Usando entorno del wrapper: {wrapper_env}")
-        return wrapper_env
-    
-    # SEGUNDO: Detección automática de respaldo
+    """Detecta automáticamente el entorno de ejecución"""
     machine = os.uname().machine
-    print(f"Info máquina: {machine}")
     
-    # Métodos para detectar QEMU
-    qemu_indicators = [
-        "/etc/qemu-banner",
-        "/proc/device-tree/model"
-    ]
-    
-    is_qemu = False
-    for indicator in qemu_indicators:
-        if os.path.exists(indicator):
-            try:
-                with open(indicator, 'r') as f:
-                    content = f.read()
-                    if 'QEMU' in content.upper():
-                        is_qemu = True
-                        print(f"✓ QEMU detectado por: {indicator}")
-                        break
-            except:
-                continue
-    
-    # También verificar en uname
-    if not is_qemu and 'qemu' in machine.lower():
-        is_qemu = True
-        print("✓ QEMU detectado por uname")
+    # Verificar si estamos en QEMU
+    is_qemu = os.path.exists("/etc/qemu-banner") or "qemu" in machine.lower()
     
     if is_qemu:
         return "qemu"
@@ -53,11 +23,9 @@ def detect_environment():
 
 # Detectar entorno
 environment = detect_environment()
-print(f"Entorno final: {environment}")
+print(f"Entorno detectado: {environment}")
 
-# ===========================
-# CONFIGURACIÓN POR ENTORNO - AJUSTADA PARA QEMU
-# ===========================
+# Configuraciones específicas por entorno
 if environment == "rpi4":
     # Optimización para RPi4
     os.environ["OMP_NUM_THREADS"] = "4"
@@ -66,31 +34,26 @@ if environment == "rpi4":
     cv2.setNumThreads(2)
     PROCESS_EVERY_N_FRAMES = 2
     WINDOW_NAME = "Semaforo Inteligente (RPi4)"
-    CONF_THRESHOLD = 0.3
-    NMS_THRESHOLD = 0.4
     
 elif environment == "qemu":
-    # QEMU es MUY lento - ajustes agresivos
-    print("⚠️  QEMU detectado - aplicando optimizaciones para emulación")
-    PROCESS_EVERY_N_FRAMES = 4  # Procesar solo 1 de cada 4 frames
+    # QEMU es más lento, procesar menos frames
+    PROCESS_EVERY_N_FRAMES = 3
     WINDOW_NAME = "Semaforo Inteligente (QEMU)"
-    CONF_THRESHOLD = 0.5  # Umbral más alto para menos detecciones
-    NMS_THRESHOLD = 0.5   # Menos NMS para más velocidad
-    # Reducir threads para QEMU
-    cv2.setNumThreads(1)
-    
+    # Forzar display si está disponible
+    if 'DISPLAY' not in os.environ:
+        os.environ['DISPLAY'] = ':0'
+        
 else:  # PC
     PROCESS_EVERY_N_FRAMES = 1
     WINDOW_NAME = "Semaforo Inteligente"
-    CONF_THRESHOLD = 0.3
-    NMS_THRESHOLD = 0.4
-
-print(f"Configuración: Procesando 1 de cada {PROCESS_EVERY_N_FRAMES} frames")
 
 # ==========================================
-#  EL RESTO DE TU CÓDIGO ORIGINAL (CON AJUSTES)
+#  TUS LÍNEAS ORIGINALES (PRÁCTICAMENTE IGUAL)
 # ==========================================
 def load_tflite():
+    """
+    Intenta usar tflite-runtime y si no existe, cae a TensorFlow.
+    """
     try:
         from tflite_runtime.interpreter import Interpreter
         return Interpreter
@@ -98,6 +61,9 @@ def load_tflite():
         import tensorflow as tf
         return tf.lite.Interpreter
 
+# ==========================================
+#  IMPORT DEL INTERPRETER
+# ==========================================
 TFLiteInterpreter = load_tflite()
 interpreter = TFLiteInterpreter(model_path="yolo11n_float16.tflite")
 interpreter.allocate_tensors()
@@ -109,13 +75,14 @@ with open("labels.txt", "r") as f:
     labels = [line.strip() for line in f.readlines()]
 
 img_height, img_width = 640, 640
-# Usar los thresholds según el entorno
-conf_threshold = CONF_THRESHOLD
-nms_threshold = NMS_THRESHOLD
+conf_threshold = 0.3
+nms_threshold = 0.4
 
 # ===========================
-# Parámetros generales
+# Parámetros generales (AJUSTADOS)
 # ===========================
+# SIMULATE_RASPBERRY ya no es necesario - usamos PROCESS_EVERY_N_FRAMES por entorno
+
 CROSS_X1 = 0
 CROSS_Y1 = 230
 CROSS_X2 = 640
@@ -129,14 +96,14 @@ ANIMAL_CLASSES = ["cat", "dog"]
 # Semáforos
 # ===========================
 semaforo_vehicular = "RED"
-semaforo_peatonal = "GREEN"
+semaforo_peatonal = "GREEN"   # inverso
 semaphore_state_since = time.time()
 
 MIN_RED_TIME = 20.0
 MIN_GREEN_TIME = 30.0
 
 # ===========================
-# TUS FUNCIONES ORIGINALES (preprocess, is_in_crossing_zone, etc.)
+# FUNCIONES (IGUALES)
 # ===========================
 def is_in_crossing_zone(bbox):
     x1, y1, x2, y2 = bbox
@@ -168,8 +135,10 @@ def get_color_by_class(class_name):
         return (0, 0, 255)
     elif class_name in VEHICLE_CLASSES:
         return (255, 0, 0)
-    elif class_name in ANIMAL_CLASSES:
-        return (0, 165, 255)
+    elif class_name in ["train", "airplane", "boat"]:
+        return (0, 255, 255)
+    elif class_name in ["traffic light", "stop sign", "parking meter"]:
+        return (255, 255, 0)
     else:
         return (0, 255, 0)
 
@@ -178,9 +147,11 @@ def overlap_correction(detections, labels):
         return detections
 
     filtered = []
+
     for i, (bbox1, score1, class_id1) in enumerate(detections):
         if class_id1 >= len(labels):
             continue
+
         class_name1 = labels[class_id1]
         x1_1, y1_1, x2_1, y2_1 = bbox1
         keep = True
@@ -188,6 +159,7 @@ def overlap_correction(detections, labels):
         for j, (bbox2, score2, class_id2) in enumerate(detections):
             if i == j or class_id2 >= len(labels):
                 continue
+
             class_name2 = labels[class_id2]
             x1_2, y1_2, x2_2, y2_2 = bbox2
 
@@ -202,6 +174,7 @@ def overlap_correction(detections, labels):
 
         if keep:
             filtered.append((bbox1, score1, class_id1))
+
     return filtered
 
 def postprocess(outputs, orig_dims, conf_threshold=0.3, nms_threshold=0.4):
@@ -254,10 +227,11 @@ def postprocess(outputs, orig_dims, conf_threshold=0.3, nms_threshold=0.4):
     if len(indices) > 0:
         for i in indices.flatten():
             result.append((bboxes_orig[i], scores_valid[i], class_ids_valid[i]))
+
     return result
 
 # ===========================
-# Loop principal
+# Loop principal (ACTUALIZADO)
 # ===========================
 def main():
     global semaforo_vehicular, semaforo_peatonal, semaphore_state_since
@@ -265,7 +239,8 @@ def main():
     cap = cv2.VideoCapture("video_test.mp4")
     
     if not cap.isOpened():
-        print("ERROR: No se puede abrir el video")
+        print("ERROR: No se puede abrir el video 'video_test.mp4'")
+        print("Verifica que el archivo existe en el directorio actual")
         return 1
 
     frame_count = 0
@@ -278,7 +253,7 @@ def main():
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
-            print("Fin del video")
+            print("Fin del video alcanzado")
             break
 
         frame_count += 1
@@ -289,7 +264,7 @@ def main():
             frame_display = cv2.resize(frame, (640, 360))
             cv2.putText(frame_display, f"[{environment.upper()}] Frame saltado", (10, 25),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-            cv2.putText(frame_display, f"Config: 1/{PROCESS_EVERY_N_FRAMES} frames", (10, 50),
+            cv2.putText(frame_display, f"Entorno: {environment}", (10, 50),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
             
             try:
@@ -298,6 +273,8 @@ def main():
                     break
             except Exception as e:
                 print(f"Error mostrando ventana: {e}")
+                # Continuar sin mostrar ventana
+                
             continue
 
         # Procesamiento completo del frame
@@ -315,49 +292,23 @@ def main():
         outputs = [interpreter.get_tensor(output_details[i]["index"]) for i in range(len(output_details))]
         detections = overlap_correction(postprocess(outputs, transform_dims, conf_threshold, nms_threshold), labels)
 
-        # Dibujar zona de cruce
         cv2.rectangle(frame_display, (CROSS_X1, CROSS_Y1), (CROSS_X2, CROSS_Y2), (0, 255, 255), 2)
 
         crossing_people_count = 0
         has_vehicle = False
-        total_detections = 0
 
-        # Dibujar detecciones YOLO
         for bbox, score, class_id in detections:
-            if class_id >= len(labels):
-                continue
-                
             class_name = labels[class_id]
-            total_detections += 1
-            
-            if class_name not in ALLOWED_CLASSES:
-                continue
 
-            x1, y1, x2, y2 = [int(coord) for coord in bbox]
-            color = get_color_by_class(class_name)
-            
-            # Dibujar bounding box
-            cv2.rectangle(frame_display, (x1, y1), (x2, y2), color, 2)
-            
-            # Etiqueta con clase y confianza
-            label = f"{class_name}: {score:.2f}"
-            label_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)[0]
-            cv2.rectangle(frame_display, (x1, y1 - label_size[1] - 5), 
-                         (x1 + label_size[0], y1), color, -1)
-            cv2.putText(frame_display, label, (x1, y1 - 5),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
-            # Lógica para semáforos
             if class_name in VEHICLE_CLASSES:
                 has_vehicle = True
 
             if class_name == "person" and is_in_crossing_zone(bbox):
                 crossing_people_count += 1
-                cv2.rectangle(frame_display, (x1, y1), (x2, y2), (0, 0, 255), 3)
-                cv2.putText(frame_display, "EN CRUCE!", (x1, y1 - 20),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-        # Lógica del semáforo
+        # ===========================
+        # LÓGICA DEL SEMÁFORO
+        # ===========================
         has_ped_or_animal = crossing_people_count > 0
         time_in_state = now - semaphore_state_since
 
@@ -365,45 +316,51 @@ def main():
             if has_ped_or_animal and (time_in_state >= MIN_GREEN_TIME or not has_vehicle):
                 semaforo_vehicular = "RED"
                 semaphore_state_since = now
+
         elif semaforo_vehicular == "RED":
             if time_in_state >= MIN_RED_TIME:
                 semaforo_vehicular = "GREEN"
                 semaphore_state_since = now
 
+        # Semáforo peatonal inverso
         semaforo_peatonal = "RED" if semaforo_vehicular == "GREEN" else "GREEN"
 
-        # Visualización
+        # ===========================
+        # VISUALIZACIÓN
+        # ===========================
+        # Vehicular (derecha)
         color_v = (0, 255, 0) if semaforo_vehicular == "GREEN" else (0, 0, 255)
         cv2.circle(frame_display, (600, 60), 15, color_v, -1)
-        cv2.putText(frame_display, f"Vehicular: {semaforo_vehicular}", (350, 65),
+        cv2.putText(frame_display, f"Semaforo Vehicular: {semaforo_vehicular}", (350, 65),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_v, 2)
 
+        # Peatonal (izquierda)
         color_p = (0, 255, 0) if semaforo_peatonal == "GREEN" else (0, 0, 255)
         cv2.circle(frame_display, (40, 60), 15, color_p, -1)
-        cv2.putText(frame_display, f"Peatonal: {semaforo_peatonal}", (10, 95),
+        cv2.putText(frame_display, f"Semaforo Peatonal: {semaforo_peatonal}", (10, 95),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, color_p, 2)
 
         # Información adicional
         cv2.putText(frame_display, f"Entorno: {environment}", (10, 25), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
-        cv2.putText(frame_display, f"Detecciones: {total_detections}", (10, 50), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
-        cv2.putText(frame_display, f"Personas en cruce: {crossing_people_count}",
-                    (10, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        cv2.putText(frame_display, f"Personas/animales en cruce: {crossing_people_count}",
+                    (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
         cv2.putText(frame_display, f"FPS inferencia: {fps_inference:.1f}",
-                    (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    (10, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
-        # Mostrar ventana
+        # Mostrar ventana con manejo de errores
         try:
             cv2.imshow(WINDOW_NAME, frame_display)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
         except Exception as e:
             print(f"Error mostrando ventana: {e}")
+            # Continuar procesando sin interfaz gráfica
+            print(f"Procesando en modo headless - Frame {frame_count}")
 
     cap.release()
     cv2.destroyAllWindows()
-    print(f"Procesamiento completado. Frames: {frame_count}, Procesados: {processed_frames}")
+    print(f"Procesamiento completado. Total frames: {frame_count}, Frames procesados: {processed_frames}")
     return 0
 
 if __name__ == "__main__":
