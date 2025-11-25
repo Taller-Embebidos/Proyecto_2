@@ -70,14 +70,22 @@ if environment == "rpi4":
     NMS_THRESHOLD = 0.4
     
 elif environment == "qemu":
-    # QEMU es MUY lento - ajustes agresivos
-    print("⚠️  QEMU detectado - aplicando optimizaciones para emulación")
-    PROCESS_EVERY_N_FRAMES = 4  # Procesar solo 1 de cada 4 frames
-    WINDOW_NAME = "Semaforo Inteligente (QEMU)"
-    CONF_THRESHOLD = 0.5  # Umbral más alto para menos detecciones
-    NMS_THRESHOLD = 0.5   # Menos NMS para más velocidad
-    # Reducir threads para QEMU
-    cv2.setNumThreads(1)
+    # QEMU es EXTREMADAMENTE lento - ajustes MUY agresivos
+    print("⚠️  QEMU detectado - aplicando OPTIMIZACIONES EXTREMAS para emulación")
+    PROCESS_EVERY_N_FRAMES = 10  # Procesar solo 1 de cada 10 frames
+    WINDOW_NAME = "Semaforo Inteligente (QEMU - MUY LENTO)"
+    CONF_THRESHOLD = 0.7  # Umbral MUY alto para MUY pocas detecciones
+    NMS_THRESHOLD = 0.6   # Menos NMS para más velocidad
+    
+    # Optimizaciones extremas
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["TF_NUM_INTEROP_THREADS"] = "1" 
+    os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+    cv2.setNumThreads(0)  # Deshabilitar threads de OpenCV
+    
+    # Reducir resolución de procesamiento
+    global img_height, img_width
+    img_height, img_width = 320, 320  # Mitad de resolución para YOLO
     
 else:  # PC
     PROCESS_EVERY_N_FRAMES = 1
