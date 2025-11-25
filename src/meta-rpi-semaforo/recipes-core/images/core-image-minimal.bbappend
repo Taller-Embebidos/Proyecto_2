@@ -2,19 +2,23 @@ IMAGE_FEATURES += "ssh-server-dropbear x11-base"
 
 IMAGE_INSTALL:append = " \
     semaforo-inteligente \
-    python3 \
-    python3-opencv \
-    python3-numpy \
     tensorflow-lite \
-    libgomp \
-    libstdc++ \
+    python3 \
+    python3-numpy \
+    python3-opencv \
     nano \
     xterm \
     xserver-xorg \
+    xinit \ 
     xhost \
     mesa \
+    matchbox-wm \ 
+    matchbox-terminal \
     gstreamer1.0 \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
+    gstreamer1.0-plugins-good-isomp4 \
 "

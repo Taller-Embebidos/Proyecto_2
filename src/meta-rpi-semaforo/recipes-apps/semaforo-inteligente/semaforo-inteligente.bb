@@ -1,4 +1,3 @@
-
 SUMMARY = "Sistema de semáforo inteligente con YOLO"
 LICENSE = "CLOSED"
 
@@ -6,13 +5,19 @@ SRC_URI = "git://github.com/Taller-Embebidos/Proyecto_2.git;branch=main;protocol
 SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
-# DEPENDS para compilación - SOLO lo esencial
-DEPENDS = " \
+DEPENDS = "\
     python3-native \
+    opencv \
+    gstreamer1.0 \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
 "
 
-# RDEPENDS para runtime
-RDEPENDS:${PN} = " \
+RDEPENDS:${PN} = "\
+    python3 \
     python3-opencv \
     python3-numpy \
     tensorflow-lite \
@@ -22,64 +27,87 @@ RDEPENDS:${PN} = " \
     gstreamer1.0 \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
+    gstreamer1.0-plugins-good-isomp4 \
 "
-
 do_install() {
     install -d ${D}${bindir}
     install -d ${D}${datadir}/semaforo
-    
-    # Crear wrapper script ejecutable
+
     cat > ${D}${bindir}/semaforo << 'SCRIPT'
 #!/bin/bash
 echo "========================================"
 echo "    SEMÁFORO INTELIGENTE - YOLO TFLite"
 echo "========================================"
 
-# Configurar display (X11 debería estar corriendo en segundo plano)
+# Configuración de display universal
 export DISPLAY=:0
 export XAUTHORITY=/home/root/.Xauthority
 
-# Verificar si X11 está corriendo
-if ! xset q >/dev/null 2>&1; then
-    echo "Iniciando X11 automáticamente..."
-    startx > /dev/null 2>&1 &
-    sleep 3
-    echo " X11 iniciado"
+# Detectar si estamos en QEMU o hardware real
+if [ -f /proc/device-tree/model ] && grep -q "QEMU" /proc/device-tree/model 2>/dev/null; then
+    echo "Entorno: QEMU (emulación) - detectado por device-tree"
+    ENV="qemu"
+elif [ -f /etc/qemu-banner ]; then
+    echo "Entorno: QEMU (emulación) - detectado por qemu-banner"
+    ENV="qemu"
+elif uname -a | grep -q "qemu"; then
+    echo "Entorno: QEMU (emulación) - detectado por uname"
+    ENV="qemu"
 else
-    echo "X11 ya está corriendo"
+    echo "Entorno: Hardware real"
+    ENV="rpi4"
 fi
 
-# Navegar al directorio de la aplicación
+echo "Variable ENV establecida como: $ENV"
+
+# Manejo de X11 según el entorno
+if ! xset q >/dev/null 2>&1; then
+    echo "X11 no está corriendo - intentando iniciar..."
+    
+    if [ "$ENV" = "qemu" ]; then
+        echo "Iniciando X11 para QEMU..."
+        X -nocursor :0 &
+        sleep 5
+    else
+        echo "En hardware real, X11 debería iniciarse automáticamente"
+        echo "Si no hay display, iniciando X11..."
+        startx &
+        sleep 3
+    fi
+    
+    # Re-exportar variables después de iniciar X11
+    export DISPLAY=:0
+    export XAUTHORITY=/home/root/.Xauthority
+    sleep 2
+fi
+
+# Verificar estado final de X11
+if xset q >/dev/null 2>&1; then
+    echo "✓ X11 funcionando en $DISPLAY"
+else
+    echo " X11 no disponible - modo headless"
+fi
+
 cd /usr/share/semaforo
 
-# Verificar archivos esenciales
-echo "Verificando archivos..."
-[ -f "semaforo.py" ] && echo "T semaforo.py" || echo "X semaforo.py - NO ENCONTRADO"
-[ -f "video_test.mp4" ] && echo "T video_test.mp4" || echo "X video_test.mp4 - NO ENCONTRADO"
-[ -f "yolo11n_float16.tflite" ] && echo "T yolo11n_float16.tflite" || echo "X modelo - NO ENCONTRADO"
-[ -f "labels.txt" ] && echo "T labels.txt" || echo "X labels.txt - NO ENCONTRADO"
-
-echo ""
-echo "Ejecutando aplicación..."
-echo "Presiona 'q' en la ventana para salir"
-echo "========================================"
-
-# Ejecutar la aplicación Python
+echo "Ejecutando semáforo inteligente..."
+# Forzar el entorno como variable de entorno
+export SEMAFORO_ENVIRONMENT="$ENV"
 python3 semaforo.py
-
-echo ""
-echo "Aplicación terminada."
 SCRIPT
     chmod 0755 ${D}${bindir}/semaforo
-    
-    # Instalar archivos de la aplicación
+
     install -m 0755 ${S}/src/semaforo.py ${D}${datadir}/semaforo/
     install -m 0644 ${S}/src/yolo11n_float16.tflite ${D}${datadir}/semaforo/
     install -m 0644 ${S}/src/labels.txt ${D}${datadir}/semaforo/
     install -m 0644 ${S}/src/video_test.mp4 ${D}${datadir}/semaforo/
 }
 
-FILES:${PN} += " \
+
+FILES:${PN} += "\
     ${bindir}/semaforo \
     ${datadir}/semaforo/semaforo.py \
     ${datadir}/semaforo/yolo11n_float16.tflite \
