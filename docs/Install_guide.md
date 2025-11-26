@@ -22,12 +22,12 @@ mkdir ~/tools
 
 Usando Toolbox (recomendado):
 ```bash
-toolbox create --image registry.fedoraproject.org/fedora-toolbox:40 yocto
+toolbox create --image registry.fedoraproject.org/fedora-toolbox:38 yocto
 ```
 
 Usando Podman:
 ```bash
-podman run -it --name yocto -v /home/<user>/tools:/tools:z registry.fedoraproject.org/fedora-toolbox:40 /bin/bash
+podman run -it --name yocto -v /home/<user>/tools:/tools:z registry.fedoraproject.org/fedora-toolbox:38 /bin/bash
 ```
 
 Notas:
@@ -151,8 +151,8 @@ nano conf/local.conf
 
 Modificar dentro de local.conf estas entradas, descomentalas o agregalas si no se encuentran
 ```bash
-MACHINE ??= "raspberrypi4"
-EXTRA_IMAGE_FEATURES ?= "debug-tweaks tools-sdk tools-debug"
+MACHINE ??= "raspberrypi4-64"
+EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
 ```
 Opciones de mirroring y hashserv (opcional):
 ```bash
