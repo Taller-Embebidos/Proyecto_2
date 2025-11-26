@@ -1,4 +1,4 @@
-# - Segundo Proyecto Cruces Inteligentes con EDGE AL embebido
+# - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
 
 # - Ojetivos Especificos
 
