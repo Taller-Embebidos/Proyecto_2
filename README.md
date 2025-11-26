@@ -1,4 +1,22 @@
-# Template Universitario - Mi Segundo Proyect Repo
+# - Segundo Proyecto Cruces Inteligentes con EDGE AL embebido
+
+# - Ojetivos Especificos
+
+1. Desarrollar una arquitectura física del sistema embebido por medio
+de un análisis operacional del sistema propuesto, y la síntesis de una
+propuesta de diseño.
+
+2. Sintetizar un conjunto de aplicaciones de software capaces de
+implementar las funcionalidades requeridas para el sistema
+embebido por medio del uso de herramientas de visión por
+computador y aprendizaje máquina, así como el flujo de trabajo de
+Yocto Project con tensorflow lite.
+
+3. Demostrar la operación correcta del sistema embebido mediante la
+elaboración de una presentación presencial del desarrollo,
+implementación y verificación a partir de casos de uso específicos
+para la aplicación propuesta corriendo sobre Raspberry pi.
+
 
 Este repositorio sirve como **punto de partida para proyectos universitarios**.  
 Los estudiantes pueden clonar este repo y usarlo como base para sus propios repositorios.<br>
@@ -61,4 +79,4 @@ git push origin mi-rama
 
 ---
 
-Creado por Kendy Arias, para el mini taller #1 de Sistemas Embebidos, IIS 2025.
+Creado  Proyecto 2 Grupo 2 Carlos Elizondo, Rodrigo Venegas, Manuel Garita de Sistemas Embebidos, IIS 2025.
