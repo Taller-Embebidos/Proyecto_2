@@ -18,10 +18,7 @@ implementación y verificación a partir de casos de uso específicos
 para la aplicación propuesta corriendo sobre Raspberry pi.
 
 
-Este repositorio sirve como **punto de partida para proyectos universitarios**.  
-Los estudiantes pueden clonar este repo y usarlo como base para sus propios repositorios.<br>
-proyecto2.<br>
-Se necesita revisar este **Markdown**
+
 
 ---
 
@@ -52,7 +49,7 @@ Sabado 3:00 pm a 8:00 pm
 | Manuel Garita Brenes       | Investigador               | Verificación   |
 
 
-## Cómo usar este template
+## Crear imagen Rasp
 
 1. **Clonar el repositorio**
 
