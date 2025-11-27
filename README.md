@@ -36,10 +36,10 @@ Se necesita revisar este **Markdown**
 ## Roles
 | Nombre                     | Rol administrativo         | Rol técnico |
 | ---                        | ---                        | ---         |
-| Carlos Elizondo Alfaro     | Administrador de proyecto  | Ingenierio en Sistemas |
-| Rodrigo Venegas Mora       | Documentador               | Diseño Mecánico |
-| Manuel Garita Brenes       | Business Intelligence      | Lider técnico |
-| Manuel Garita Brenes       | Líder administrativo       | Verificación y Validación  |
+| Carlos Elizondo Alfaro     | Director del Proyecto      | Ingenierio en Sistemas |
+| Rodrigo Venegas Mora       | Diseño                     | Lider técnico      | 
+| Manuel Garita Brenes       | Auditor                    | Validacion        |
+| Manuel Garita Brenes       | Investigador               | Verificación   |
 
 
 ## Cómo usar este template
