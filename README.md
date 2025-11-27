@@ -33,6 +33,16 @@ Se necesita revisar este **Markdown**
 - .gitignore → Archivo para ignorar archivos temporales y del sistema
 
 ---
+## Horario de reuniones
+
+Lunes 5:00 pm a 7:00 pm 
+
+Miercoles 9:00 pm a 10:00 pm
+
+Sabado 3:00 pm a 8:00 pm
+
+
+
 ## Roles
 | Nombre                     | Rol administrativo         | Rol técnico |
 | ---                        | ---                        | ---         |
