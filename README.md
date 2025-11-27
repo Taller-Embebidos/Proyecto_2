@@ -33,6 +33,14 @@ Se necesita revisar este **Markdown**
 - .gitignore → Archivo para ignorar archivos temporales y del sistema
 
 ---
+## Roles
+| Nombre                     | Rol administrativo         | Rol técnico |
+| ---                        | ---                        | ---         |
+| Carlos Elizondo Alfaro     | Administrador de proyecto  | Ingenierio en Sistemas |
+| Rodrigo Venegas Mora       | Documentador               | Diseño Mecánico |
+| Manuel Garita Brenes       | Business Intelligence      | Lider técnico |
+| Manuel Garita Brenes       | Líder administrativo       | Verificación y Validación  |
+
 
 ## Cómo usar este template
 
