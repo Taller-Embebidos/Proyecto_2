@@ -10,12 +10,9 @@ IMAGE_INSTALL:append = " \
     xterm \
     xserver-xorg \
     xinit \
-    xhost \
     mesa \
     matchbox-wm \
     matchbox-terminal \
-    xf86-video-modesetting \
-    xf86-input-evdev \
     gstreamer1.0 \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
@@ -28,6 +25,5 @@ IMAGE_INSTALL:append = " \
     networkmanager-nmtui \
     dhcpcd \
 "
-
 
 PACKAGECONFIG:append:pn-opencv = " gtk v4l"

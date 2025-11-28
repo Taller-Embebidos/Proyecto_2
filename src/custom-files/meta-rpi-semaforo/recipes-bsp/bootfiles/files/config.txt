@@ -1,7 +1,4 @@
-# Configuración básica para HDMI y GPU
-hdmi_force_hotplug=1
-hdmi_group=2
-hdmi_mode=82
+dtoverlay=vc4-kms-v3d
+gpu_mem=256
+max_framebuffers=2
 
-# GPU para X11
-gpu_mem=128
