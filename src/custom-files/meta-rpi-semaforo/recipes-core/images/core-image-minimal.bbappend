@@ -9,11 +9,13 @@ IMAGE_INSTALL:append = " \
     nano \
     xterm \
     xserver-xorg \
-    xinit \ 
+    xinit \
     xhost \
     mesa \
-    matchbox-wm \ 
+    matchbox-wm \
     matchbox-terminal \
+    xf86-video-modesetting \
+    xf86-input-evdev \
     gstreamer1.0 \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
@@ -21,4 +23,11 @@ IMAGE_INSTALL:append = " \
     gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
     gstreamer1.0-plugins-good-isomp4 \
+    gtk+3 \
+    networkmanager \
+    networkmanager-nmtui \
+    dhcpcd \
 "
+
+
+PACKAGECONFIG:append:pn-opencv = " gtk v4l"
