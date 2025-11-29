@@ -1,5 +1,6 @@
 manuel@manuel-Latitude-E7470:~$ podman ps CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES 63bf91746e2d registry.fedoraproject.org/fedora-toolbox:40 /bin/bash 7 weeks ago Up 10 minutes ago yocto manuel@manuel-Latitude-E7470:~$
 Tu contenedor yocto sí está corriendo, pero no estás entrando correctamente.
 Dado que toolbox enter yocto falla por versión antigua, debes entrar directamente con Podman, porque toolbox usa Podman debajo.
-
+Solucion con el siguiente comando : podman exec -it yocto /bin/bash
+Asi se logra entrar al contenedor creado: [root@63bf91746e2d /]# 
 ---
