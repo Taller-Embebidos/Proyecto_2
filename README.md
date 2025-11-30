@@ -1,9 +1,10 @@
 # - Readme !!!
+* [Estructura del repositorio]
 * [Horario de Reuniones](#horario-reuniones)
 * [Roles](#roles)
-* [Responsabilidades administrativas](#responsabilidades-administrativas)
-* [Responsabilidaes técnicas](#responsabilidades-técnicas)
-* [Bitácora](#bitácora)
+* [Crear Imagen Raspberry Pi 4]
+* [Usar este repo como template en GitHub]
+* [Buenas prácticas]
 
 
 # - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
