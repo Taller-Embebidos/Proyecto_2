@@ -1,3 +1,11 @@
+# - Readme !!!
+* [Horario de Reuniones](#horario-reuniones)
+* [Roles](#roles)
+* [Responsabilidades administrativas](#responsabilidades-administrativas)
+* [Responsabilidaes técnicas](#responsabilidades-técnicas)
+* [Bitácora](#bitácora)
+
+
 # - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
 
 # - Ojetivos Especificos
