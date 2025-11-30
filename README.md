@@ -1,4 +1,7 @@
 # - Readme !!!
+
+# - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
+
 * [Estructura del repositorio](#)
 * [Horario de Reuniones](#)
 * [Roles](#)
@@ -7,7 +10,7 @@
 * [Buenas prácticas](#)
 
 
-# - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
+
 
 # - Ojetivos Especificos
 
