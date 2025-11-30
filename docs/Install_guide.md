@@ -194,6 +194,11 @@ Luego ejecuta:
 ```bash
 sudo umount /dev/sdx
 ```
+Se elimina todo lo de la memoria para crear la imagen
+
+```bash
+sudo wipefs -a /dev/sdx
+```
 
 ```bash
 sudo bmaptool copy <image file>.rootfs.wic.bz2 --bmap <image file>.rootfs.wic.bmap /dev/sdX
