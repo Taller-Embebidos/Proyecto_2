@@ -2,13 +2,16 @@
 
 # - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
 
-* [Ojetivos Especificos](#)
-* [Estructura del repositorio](#)
-* [Horario de Reuniones](#)
-* [Roles](#)
-* [Crear Imagen Raspberry Pi 4](#)
-* [Usar este repo como template en GitHub](#)
-* [Buenas prácticas](#)
+
+## Tabla de contenidos
+* [Objetivos Específicos](#objetivos-específicos)
+* [Estructura del repositorio](#estructura-del-repositorio)
+* [Horario de Reuniones](#horario-de-reuniones)
+* [Roles](#roles)
+* [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
+* [Usar este repo como template en GitHub](#usar-este-repo-como-template-en-github)
+* [Buenas prácticas](#buenas-prácticas)
+
 
 
 
