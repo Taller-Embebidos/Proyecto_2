@@ -62,7 +62,7 @@ Sabado 3:00 pm a 8:00 pm
 | Manuel Garita Brenes       | Investigador               | Verificación   |
 
 
-## Crear imagen Rasp
+## Crear imagen Raspberry Pi
 
 1. **Clonar el repositorio**
 
