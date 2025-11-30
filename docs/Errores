@@ -4,3 +4,4 @@ Dado que toolbox enter yocto falla por versión antigua, debes entrar directamen
 Solucion con el siguiente comando : podman exec -it yocto /bin/bash
 Asi se logra entrar al contenedor creado: [root@63bf91746e2d /]# 
 ---
+Al intentar porcesar la imagen o videos en la Ras
