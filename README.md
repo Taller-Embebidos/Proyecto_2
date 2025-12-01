@@ -5,8 +5,8 @@
 
 ## Tabla de contenidos
 * [Objetivos Específicos](#objetivos-específicos)
-* [Estructura del repositorio](#estructura-del-repositorio)
-* [Repositorio](#repositorio)
+* [📂Estructura del repositorio](#estructura-del-repositorio)
+* [📂Repositorio](#repositorio)
 * [Horario de Reuniones](#horario-de-reuniones)
 * [Roles](#roles)
 * [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
@@ -39,7 +39,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 
 ---
 
-## Estructura del repositorio 📂
+## 📂Estructura del repositorio 
 
 - /src/ → Carpeta para código o mini-proyectos
 - * [docs](#docs)
@@ -49,7 +49,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 ---
 # Proyecto de Sistemas Embebidos
 
-## 📂 Repositorio
+## 📂Repositorio
 
 - [Código fuente](src/)
 - [Documentación](docs/)
