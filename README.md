@@ -1,6 +1,6 @@
 # - Readme !!!
 <p align="center">
-  <img src="imagenes/LogoTec.png" width="400" alt="Logo TEC">
+  <img src="imagenes/LogoTec.png" width="500" alt="Logo TEC">
 </p>
 
 
