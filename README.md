@@ -9,7 +9,7 @@
 
 ## Tabla de contenidos
 * [🎯Objetivos Específicos](#objetivos-específicos)
-* [📂Estructura del repositorio](#estructura-del-repositorio)
+* [📂Estructura del repositorio](#estructura-del-repositorio)                                 
 * [📂Repositorio](#repositorio)
 * [🕒📆Horario de Reuniones](#horario-de-reuniones)
 * [👥Roles](#roles)
@@ -89,6 +89,10 @@ Sabado 3:00 pm a 8:00 pm
 
 
 ## 📷Crear imagen Raspberry Pi
+
+<p align="center">
+  <img src="imagenes/Rasp.png" width="400" alt="Logo TEC">
+</p>
 
 1. **Clonar el repositorio**
 
