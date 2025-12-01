@@ -39,7 +39,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 
 ---
 
-## Estructura del repositorio
+## Estructura del repositorio 📂
 
 - /src/ → Carpeta para código o mini-proyectos
 - * [docs](#docs)
