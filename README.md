@@ -2,7 +2,8 @@
 <p align="center">
   <img src="imagenes/LogoTec.png" width="200" alt="Logo TEC">
 </p>
----
+
+
 ## - Segundo Proyecto Cruces Inteligentes con EDGE AI embebido
 
 
