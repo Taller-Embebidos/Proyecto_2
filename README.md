@@ -41,7 +41,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 ## Estructura del repositorio
 
 - /src/ → Carpeta para código o mini-proyectos
-- * [docs](#docs Propuesta de diseño)
+- * [docs](#docs)
 - /docs/ → Carpeta para notas y documentación
 - /imagenes/ → Carpeta para recursos visuales (#imágenes)
 - .gitignore → Archivo para ignorar archivos temporales y del sistema
