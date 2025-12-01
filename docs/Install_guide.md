@@ -138,6 +138,7 @@ cd ~/tools/poky/rpi-build
 bitbake-layers add-layer ../meta-raspberrypi
 bitbake-layers add-layer ../meta-openembedded/meta-oe
 bitbake-layers add-layer ../meta-openembedded/meta-python
+bitbake-layers add-layer ../meta-openembedded/meta-networking
 bitbake-layers add-layer ../meta-tensorflow
 ```
 
@@ -151,8 +152,19 @@ nano conf/local.conf
 
 Modificar dentro de local.conf estas entradas, descomentalas o agregalas si no se encuentran
 ```bash
-MACHINE ??= "raspberrypi4-64"
-EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
+
+LICENSE_FLAGS_ACCEPTED = "commercial"
+
+MACHINE = "raspberrypi4-64"
+ENABLE_UART = "1"
+GPU_MEM = "256"
+
+MACHINE_FEATURES:append = " vc4graphics"
+DISTRO_FEATURES:append = " x11 opengl"
+
+#  KMS 
+RPI_USE_KMS = "1"
+
 ```
 Opciones de mirroring y hashserv (opcional):
 ```bash
@@ -161,29 +173,35 @@ SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfil
 ```
 
 
-Nota: Aquí puede incluir su capa de personalización "custom" si aplica. Comenta la línea por defecto de 'MACHINE' para que la compilación sea de la Raspberry pi4
+9. Importar receta custom.
+Para importar la receta custom de nuestro semáforo, copiaremos el contenido de la carpeta meta-rpi-semaforo que se encuentra dentro de este repositorio
+Registrar la capa en bblayers.conf:
+```bash
+cd ~/tools/poky/rpi-build
+bitbake-layers add-layer ../meta-rpi-semaforo
+```
 
-9. Descarga de dependencias para imagen mínima (opcional), para compilar offline
+10. Descarga de dependencias para imagen mínima (opcional), para compilar offline
 
 ```bash
 bitbake core-image-minimal -c fetch
 
 
 ```
-10. Compilación de imagen mínima 
+11. Compilación de imagen mínima 
 
 ```bash
 bitbake core-image-minimal
 ```
 
-11. Generación y copia de imagen en la SD de la Raspberry pi4
+12. Generación y copia de imagen en la SD de la Raspberry pi4
 La ruta donde va a estar la imagen compilada es la siguiente
 
 ```bash
 cd ~/tools/poky/rpi-build/tmp/deploy/images/
 ```
 
-12. Para flashearlo en Linux
+13. Para flashearlo en Linux
 
 Conecte e identifique la SD conectada en el equipo Linux:
 
