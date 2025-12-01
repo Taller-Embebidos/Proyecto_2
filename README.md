@@ -6,6 +6,7 @@
 ## Tabla de contenidos
 * [Objetivos Específicos](#objetivos-específicos)
 * [Estructura del repositorio](#estructura-del-repositorio)
+* [Repositorio](#Repositorio)
 * [Horario de Reuniones](#horario-de-reuniones)
 * [Roles](#roles)
 * [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
@@ -45,6 +46,22 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 - /docs/ → Carpeta para notas y documentación
 - /imagenes/ → Carpeta para recursos visuales (#imágenes)
 - .gitignore → Archivo para ignorar archivos temporales y del sistema
+
+## 📂 Repositorio
+
+- [Código fuente](src/)
+- [Documentación](docs/)
+- [Imágenes](imagenes/)
+
+## 🖼 Imagen principal
+![Diagrama general](imagenes/diagrama.png)
+
+## 📄 Archivos importantes
+
+- [main.c](src/main.c)
+- [Manual PDF](docs/manual.pdf)
+
+
 
 ---
 ## Horario de reuniones
