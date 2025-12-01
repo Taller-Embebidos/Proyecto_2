@@ -4,11 +4,11 @@
 
 
 ## Tabla de contenidos
-* [Objetivos Específicos](#objetivos-específicos)
+* [🎯Objetivos Específicos](#objetivos-específicos)
 * [📂Estructura del repositorio](#estructura-del-repositorio)
 * [📂Repositorio](#repositorio)
 * [🕒📆Horario de Reuniones](#horario-de-reuniones)
-* [Roles](#roles)
+* [👥Roles](#roles)
 * [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
 * [Usar este repo como template en GitHub](#usar-este-repo-como-template-en-github)
 * [Buenas prácticas](#buenas-prácticas)
@@ -17,7 +17,7 @@
 
 
 
-# - Ojetivos Especificos
+# - 🎯Ojetivos Especificos
 
 1. Desarrollar una arquitectura física del sistema embebido por medio
 de un análisis operacional del sistema propuesto, y la síntesis de una
@@ -76,7 +76,7 @@ Sabado 3:00 pm a 8:00 pm
 
 
 
-## Roles
+## 👥Roles
 | Nombre                     | Rol administrativo         | Rol técnico |
 | ---                        | ---                        | ---         |
 | Carlos Elizondo Alfaro     | Director del Proyecto      | Ingenierio en Sistemas |
