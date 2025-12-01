@@ -7,7 +7,7 @@
 * [Objetivos Específicos](#objetivos-específicos)
 * [📂Estructura del repositorio](#estructura-del-repositorio)
 * [📂Repositorio](#repositorio)
-* [Horario de Reuniones](#horario-de-reuniones)
+* [🕒📆Horario de Reuniones](#horario-de-reuniones)
 * [Roles](#roles)
 * [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
 * [Usar este repo como template en GitHub](#usar-este-repo-como-template-en-github)
@@ -66,7 +66,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 
 
 ---
-## Horario de reuniones
+## 🕒📆Horario de reuniones
 
 Lunes 5:00 pm a 7:00 pm 
 
