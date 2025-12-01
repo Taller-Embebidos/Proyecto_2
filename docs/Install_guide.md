@@ -174,7 +174,8 @@ SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfil
 
 
 9. Importar receta custom.
-Para importar la receta custom de nuestro semáforo, copiaremos el contenido de la carpeta meta-rpi-semaforo que se encuentra dentro de este repositorio
+Para importar la receta custom de nuestro semáforo, copiaremos el contenido de la carpeta meta-rpi-semaforo que se encuentra dentro de este repositorio <br>
+Copie la carpeta meta-rpi-semaforo en ~/tools/poky <br>
 Registrar la capa en bblayers.conf:
 ```bash
 cd ~/tools/poky/rpi-build
