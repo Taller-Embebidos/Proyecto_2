@@ -64,7 +64,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 ## 📄 Archivos importantes
 
 - [main.c](src/main.c)
-- [Manual PDF](docs/manual.pdf)
+- [Manual PDF](docs/Propuesta de diseño.pdf)
 
 
 
