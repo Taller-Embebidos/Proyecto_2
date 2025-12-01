@@ -6,7 +6,7 @@
 ## Tabla de contenidos
 * [Objetivos Específicos](#objetivos-específicos)
 * [Estructura del repositorio](#estructura-del-repositorio)
-* [Repositorio](#Repositorio)
+* [Repositorio](#repositorio)
 * [Horario de Reuniones](#horario-de-reuniones)
 * [Roles](#roles)
 * [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
