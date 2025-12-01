@@ -9,7 +9,7 @@
 * [📂Repositorio](#repositorio)
 * [🕒📆Horario de Reuniones](#horario-de-reuniones)
 * [👥Roles](#roles)
-* [Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
+* [📷Crear Imagen Raspberry Pi 4](#crear-imagen-raspberry-pi-4)
 * [Usar este repo como template en GitHub](#usar-este-repo-como-template-en-github)
 * [Buenas prácticas](#buenas-prácticas)
 
@@ -42,7 +42,6 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 ## 📂Estructura del repositorio 
 
 - /src/ → Carpeta para código o mini-proyectos
-- * [docs](#docs)
 - /docs/ → Carpeta para notas y documentación
 - /imagenes/ → Carpeta para recursos visuales (#imágenes)
 - .gitignore → Archivo para ignorar archivos temporales y del sistema
@@ -85,7 +84,7 @@ Sabado 3:00 pm a 8:00 pm
 | Manuel Garita Brenes       | Investigador               | Verificación   |
 
 
-## Crear imagen Raspberry Pi
+## 📷Crear imagen Raspberry Pi
 
 1. **Clonar el repositorio**
 
