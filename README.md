@@ -47,7 +47,7 @@ para la aplicación propuesta corriendo sobre Raspberry pi.
 - /imagenes/ → Carpeta para recursos visuales (#imágenes)
 - .gitignore → Archivo para ignorar archivos temporales y del sistema
 ---
-## 📂 Repositorio
+# 📂 Repositorio
 
 - [Código fuente](src/)
 - [Documentación](docs/)
